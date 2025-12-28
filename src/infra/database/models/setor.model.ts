@@ -15,9 +15,9 @@ export class SetorModel extends Model<SetorModel> {
   @Column
   declare id: number;
   @Column({ allowNull: false })
-  nome: string;
+  declare nome: string;
   @Column({ field: 'missao_id', allowNull: false })
-  missaoId: number;
+  declare missaoId: number;
 
   @BelongsTo(() => MissaoModel, 'missao_id')
   missao: MissaoModel;

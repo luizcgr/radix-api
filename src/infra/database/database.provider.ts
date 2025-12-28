@@ -1,12 +1,13 @@
 import { Logger } from '@nestjs/common';
+import * as cls from 'cls-hooked';
 import { Sequelize } from 'sequelize-typescript';
 import { RADIX_DS } from 'src/constants';
 import { Environment } from '../environment/environment.service';
 import { CelulaModel } from './models/celula.model';
+import { DevolucaoModel } from './models/devolucao.model';
 import { MissaoModel } from './models/missao.model';
 import { PessoaModel } from './models/pessoa.model';
 import { SetorModel } from './models/setor.model';
-import * as cls from 'cls-hooked';
 
 const logger = new Logger('Sequelize');
 
@@ -34,7 +35,13 @@ export const databaseProviders = [
       });
       const namespace = cls.createNamespace('sequelize-transaction-namespace');
       Sequelize.useCLS(namespace);
-      sequelize.addModels([MissaoModel, SetorModel, CelulaModel, PessoaModel]);
+      sequelize.addModels([
+        MissaoModel,
+        SetorModel,
+        CelulaModel,
+        PessoaModel,
+        DevolucaoModel,
+      ]);
       await sequelize.sync();
       sequelizeDatasource = sequelize;
       return sequelize;

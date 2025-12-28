@@ -15,9 +15,9 @@ export class CelulaModel extends Model<CelulaModel> {
   @Column
   declare id: number;
   @Column({ allowNull: false })
-  nome: string;
+  declare nome: string;
   @Column({ field: 'setor_id', allowNull: false })
-  setorId: number;
+  declare setorId: number;
 
   @BelongsTo(() => SetorModel, 'setor_id')
   setor: SetorModel;

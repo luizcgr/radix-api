@@ -13,7 +13,7 @@ export class MissaoModel extends Model<MissaoModel> {
   @Column
   declare id: number;
   @Column({ allowNull: false })
-  nome: string;
-  @Column({ allowNull: false })
-  ativo: boolean;
+  declare nome: string;
+  @Column({ allowNull: false, defaultValue: true })
+  declare ativo: boolean;
 }

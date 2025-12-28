@@ -14,12 +14,18 @@ type JwtConfig = {
   secret: string;
   expiresIn: string;
   refreshExpiresIn: string;
-}
+};
+
+type AsaasConfig = {
+  token: string;
+  url: string;
+};
 
 @Injectable()
 export class Environment {
   readonly database: DatabaseConfig;
-  readonly jwt: JwtConfig
+  readonly jwt: JwtConfig;
+  readonly asaas: AsaasConfig;
 
   constructor(configService: ConfigService) {
     this.database = {
@@ -34,6 +40,10 @@ export class Environment {
       secret: configService.get('JWT_SECRET')!,
       expiresIn: configService.get('JWT_EXPIRES_IN')!,
       refreshExpiresIn: configService.get('JWT_REFRESH_EXPIRES_IN')!,
-    }
+    };
+    this.asaas = {
+      token: configService.get('ASAAS_API_TOKEN')!,
+      url: configService.get('ASAAS_API_URL')!,
+    };
   }
 }
