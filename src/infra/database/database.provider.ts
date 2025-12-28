@@ -6,9 +6,15 @@ import { CelulaModel } from './models/celula.model';
 import { MissaoModel } from './models/missao.model';
 import { PessoaModel } from './models/pessoa.model';
 import { SetorModel } from './models/setor.model';
+import * as cls from 'cls-hooked';
 
 const logger = new Logger('Sequelize');
 
+let sequelizeDatasource: Sequelize | undefined;
+
+export const getSequelizeDatasource = (): Sequelize => {
+  return sequelizeDatasource!;
+};
 export const databaseProviders = [
   {
     provide: RADIX_DS,
@@ -26,8 +32,11 @@ export const databaseProviders = [
           }
         },
       });
+      const namespace = cls.createNamespace('sequelize-transaction-namespace');
+      Sequelize.useCLS(namespace);
       sequelize.addModels([MissaoModel, SetorModel, CelulaModel, PessoaModel]);
       await sequelize.sync();
+      sequelizeDatasource = sequelize;
       return sequelize;
     },
     inject: [Environment],
