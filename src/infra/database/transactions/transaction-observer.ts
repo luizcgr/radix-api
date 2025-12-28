@@ -32,7 +32,7 @@ export const TransactionObserver = (
       if (!namespace) {
         return throwError(() => new CustomError('Namespace not found'));
       }
-      const currentTransaction = namespace!.get('transaction');
+      const currentTransaction: unknown = namespace.get('transaction');
       if (!currentTransaction && options.propagation === 'MANDATORY') {
         return throwError(
           () => new CustomError('Mandatory transaction required'),
