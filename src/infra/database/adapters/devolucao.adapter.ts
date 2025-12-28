@@ -1,0 +1,32 @@
+import { Injectable } from '@nestjs/common';
+import { Devolucao } from 'src/modules/devolucao/types/devolucao';
+import { StatusDevolucao } from 'src/modules/devolucao/types/status-devolucao';
+import { DevolucaoModel } from '../models/devolucao.model';
+import { ModelAdapter } from './model.adapter';
+import { PessoaAdapter } from './pessoa.adapter';
+
+@Injectable()
+export class DevolucaoAdapter extends ModelAdapter<DevolucaoModel, Devolucao> {
+  constructor(private readonly _pessoaAdapter: PessoaAdapter) {
+    super();
+  }
+
+  adapt(model: DevolucaoModel): Devolucao | null {
+    if (!model) {
+      return null;
+    }
+    return {
+      id: model.id,
+      data: model.data,
+      anoReferencia: model.anoReferencia,
+      mesReferencia: model.mesReferencia,
+      status: model.status as StatusDevolucao,
+      assasPaymentId: model.assasPaymentId,
+      asaasPaymentInvoiceUrl: model.asaasPaymentInvoiceUrl,
+      asaasPaymentInvoiceNumber: model.asaasPaymentInvoiceNumber,
+      asaasPaymentCustomer: model.asaasPaymentCustomer,
+      valorTotal: model.valorTotal,
+      pessoa: this._pessoaAdapter.adapt(model.pessoa)!,
+    };
+  }
+}

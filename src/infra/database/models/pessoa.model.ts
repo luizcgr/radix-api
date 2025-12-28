@@ -16,6 +16,8 @@ export class PessoaModel extends Model<PessoaModel> {
   declare id: number;
   @Column({ field: 'nome', allowNull: false })
   declare nome: string;
+  @Column({ field: 'cpf', allowNull: false, unique: true })
+  declare cpf: string;
   @Column({ field: 'email', allowNull: false })
   declare email: string;
   @Column({ field: 'senha', allowNull: false })

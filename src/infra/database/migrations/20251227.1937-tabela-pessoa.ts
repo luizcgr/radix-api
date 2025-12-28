@@ -17,6 +17,11 @@ module.exports = {
             type: Sequelize.STRING(100),
             allowNull: false,
           },
+          cpf: {
+            type: Sequelize.STRING(11),
+            allowNull: false,
+            unique: true,
+          },
           email: {
             type: Sequelize.STRING(300),
             allowNull: false,
@@ -58,18 +63,21 @@ module.exports = {
         [
           {
             nome: 'Luiz Reis',
+            cpf: '83810420115',
             email: 'luizcgr@gmail.com',
             senha: new HashSenha('senha123').value,
             celula_id: 8,
           },
           {
             nome: 'Matheus Tonhá',
+            cpf: '44855404055',
             email: 'matheusrtonha@gmail.com',
             senha: new HashSenha('senha123').value,
             celula_id: 4,
           },
           {
             nome: 'Iran Silva',
+            cpf: '80278949053',
             email: 'pereirairan402@gmail.com',
             senha: new HashSenha('senha123').value,
             celula_id: 9,

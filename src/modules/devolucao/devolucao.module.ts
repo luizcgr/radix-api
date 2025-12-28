@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
-import { PagamentoModule } from '../pagamento/pagamento.module';
+import { PagamentoModule } from '../cobranca/pagamento.module';
+import { PessoasModule } from '../pessoas/pessoas.module';
+import { SolicitacaoDevolucaoService } from './services/solicitacao-devolucao.service';
 
 @Module({
-  imports: [PagamentoModule],
-  providers: [],
-  exports: [],
+  imports: [PessoasModule, PagamentoModule],
+  providers: [SolicitacaoDevolucaoService],
+  exports: [SolicitacaoDevolucaoService],
 })
-export class DevolucaoModel {}
+export class DevolucaoModule {}

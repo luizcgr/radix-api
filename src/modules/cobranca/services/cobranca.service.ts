@@ -1,9 +1,8 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger } from '@nestjs/common';
-import { AxiosError, AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 import moment from 'moment';
 import {
-  catchError,
   concatMap,
   defer,
   iif,
@@ -11,14 +10,14 @@ import {
   Observable,
   of,
   OperatorFunction,
-  throwError,
 } from 'rxjs';
 import { Environment } from 'src/infra/environment/environment.service';
-import { CustomError } from 'src/utils/custom-error';
+import { catchHttpErrorResponse } from 'src/utils/custom-error';
 import { money } from 'src/utils/formatters';
 import { AsaasCustomerResponse } from '../interfaces/asaas-customer-response';
+import { AsaasCustomersListResponse } from '../interfaces/asaas-customers-list-response';
 import { AsaasPaymentResponse } from '../interfaces/asaas-payment-response';
-import { Cobranca } from '../types/cobranca';
+import { CobrancaAsaas } from '../types/cobranca-asaas';
 import { FormaPagamento } from '../types/forma-pagamento';
 import { LinkPagamento } from '../types/link-pagamento';
 
@@ -31,15 +30,15 @@ export class CobrancaService {
     private readonly _http: HttpService,
   ) {}
 
-  gerar(cobranca: Cobranca): Observable<LinkPagamento> {
+  gerar(cobranca: CobrancaAsaas): Observable<LinkPagamento> {
     return this._consultarClienteNaApiAsaas(cobranca).pipe(
-      this._catchErroAoConsultarClienteNaApiAsaas(),
+      catchHttpErrorResponse(),
       this._prepararClienteParaGerarCobranca(cobranca),
       this._gerarCobrancaParaCliente(cobranca),
     );
   }
 
-  private _consultarClienteNaApiAsaas(cobranca: Cobranca) {
+  private _consultarClienteNaApiAsaas(cobranca: CobrancaAsaas) {
     return this._http.get(
       `${this._env.asaas.url}/v3/customers?cpfCnpj=${cobranca.cpf}`,
       this._gerarConfiguracaoRequestAsaas(),
@@ -55,7 +54,7 @@ export class CobrancaService {
   }
 
   private _gerarCobrancaParaCliente(
-    cobranca: Cobranca,
+    cobranca: CobrancaAsaas,
   ): OperatorFunction<AsaasCustomerResponse, LinkPagamento> {
     return concatMap((customer) =>
       this._http
@@ -65,7 +64,7 @@ export class CobrancaService {
           this._gerarConfiguracaoRequestAsaas(),
         )
         .pipe(
-          this._catchErroAoGerarCobrancaNaApiAsaas(),
+          catchHttpErrorResponse(),
           map((response: AxiosResponse) => {
             const data = response.data as AsaasPaymentResponse;
             const linkPagamento: LinkPagamento = {
@@ -87,42 +86,30 @@ export class CobrancaService {
   }
 
   private _gerarPayloadCobranca(
-    cobranca: Cobranca,
+    cobranca: CobrancaAsaas,
     customer: AsaasCustomerResponse,
   ): any {
     return {
       name: 'Comunhão de bens',
-      endDate: moment().add(2, 'days').format('YYYY-MM-DD'),
       value: cobranca.valor,
       billingType: this._definirBillingType(cobranca.formaPagamento),
       chargeType: 'DETACHED',
       description: `Pagamento via ${cobranca.formaPagamento} no valor de ${money(cobranca.valor)}`,
       customer: customer.id,
+      dueDate: moment().add(2, 'days').format('YYYY-MM-DD'),
     };
   }
 
-  private _catchErroAoGerarCobrancaNaApiAsaas(): OperatorFunction<
-    AxiosResponse<LinkPagamento>,
-    AxiosResponse<LinkPagamento>
-  > {
-    return catchError((error: AxiosError) => {
-      this._logger.error(
-        'Erro ao gerar cobrança Asaas:',
-        error.response?.data || error.message,
-      );
-      return throwError(
-        () => new CustomError('Erro ao gerar cobrança Asaas', 500),
-      );
-    });
-  }
-
-  private _prepararClienteParaGerarCobranca(cobranca: Cobranca) {
+  private _prepararClienteParaGerarCobranca(cobranca: CobrancaAsaas) {
     return concatMap((response: AxiosResponse) => {
-      const clientesEncontrados = response.data as AsaasCustomerResponse[];
-      const utilizarClienteExistente$ = defer(() => of(clientesEncontrados[0]));
+      const resultadoConsultaClientes =
+        response.data as AsaasCustomersListResponse;
+      const utilizarClienteExistente$ = defer(() =>
+        of(resultadoConsultaClientes.data[0]),
+      );
       const criarNovoCliente$ = this._criarNovoClienteNaApiAsaas(cobranca);
       return iif(
-        () => clientesEncontrados.length > 0,
+        () => resultadoConsultaClientes.data.length > 0,
         utilizarClienteExistente$,
         criarNovoCliente$,
       );
@@ -130,7 +117,7 @@ export class CobrancaService {
   }
 
   _criarNovoClienteNaApiAsaas(
-    cobranca: Cobranca,
+    cobranca: CobrancaAsaas,
   ): Observable<AsaasCustomerResponse> {
     return this._http
       .post<AsaasCustomerResponse>(
@@ -145,7 +132,7 @@ export class CobrancaService {
       );
   }
 
-  private _gerarPayloadCriacaoNovoUsuario(cobranca: Cobranca): any {
+  private _gerarPayloadCriacaoNovoUsuario(cobranca: CobrancaAsaas): any {
     return {
       name: cobranca.nome,
       cpfCnpj: cobranca.cpf,
@@ -163,22 +150,8 @@ export class CobrancaService {
     return customer;
   }
 
-  private _catchErroAoConsultarClienteNaApiAsaas() {
-    return catchError((error: AxiosError) =>
-      throwError(() => {
-        this._logger.error(
-          'Erro ao buscar cliente Asaas:',
-          error.response?.data || error.message,
-        );
-        return throwError(
-          () => new CustomError('Erro ao buscar cliente Asaas', 500),
-        );
-      }),
-    );
-  }
-
   private _definirBillingType(formaPagamento: FormaPagamento): string {
-    if (formaPagamento === 'CARTAO_CREDITO') {
+    if (formaPagamento === 'cartao_credito') {
       return 'CREDIT_CARD';
     }
     return 'PIX';

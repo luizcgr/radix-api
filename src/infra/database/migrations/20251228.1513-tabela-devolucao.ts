@@ -12,12 +12,16 @@ module.exports = {
             primaryKey: true,
             type: Sequelize.BIGINT,
           },
+          status: {
+            type: Sequelize.STRING(20),
+            allowNull: false,
+          },
           data: {
             type: Sequelize.DATE,
             allowNull: false,
             defaultValue: Sequelize.NOW,
           },
-          mes_referncia: {
+          mes_referencia: {
             type: Sequelize.INTEGER,
             allowNull: false,
           },

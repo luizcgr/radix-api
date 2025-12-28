@@ -1,6 +1,6 @@
 import { FormaPagamento } from './forma-pagamento';
 
-export type Cobranca = {
+export type CobrancaAsaas = {
   nome: string;
   cpf: string;
   valor: number;

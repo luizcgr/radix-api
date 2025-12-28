@@ -24,6 +24,8 @@ export class DevolucaoModel extends Model<DevolucaoModel> {
   declare valorTotal: number;
   @Column({ field: 'pessoa_id', allowNull: false })
   declare pessoaId: number;
+  @Column({ field: 'status', allowNull: false })
+  declare status: string;
 
   @Column({ field: 'assas_payment_id', allowNull: false })
   declare assasPaymentId: string;
