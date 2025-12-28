@@ -1,8 +1,9 @@
 import { Logger } from '@nestjs/common';
 import { getNamespace } from 'cls-hooked';
 import { firstValueFrom, from, throwError } from 'rxjs';
-import { getSequelizeDatasource } from '../database.provider';
+import { Transaction } from 'sequelize';
 import { CustomError } from 'src/utils/custom-error';
+import { getSequelizeDatasource } from '../database.provider';
 
 const logger = new Logger('TransactionObserver');
 
@@ -27,12 +28,13 @@ export const TransactionObserver = (
       ) {
         return from(Promise.resolve(originalMethod.apply(this, args)));
       }
-      getNamespace('sequelize-transaction-namespace');
       const namespace = getNamespace('sequelize-transaction-namespace');
       if (!namespace) {
         return throwError(() => new CustomError('Namespace not found'));
       }
-      const currentTransaction: unknown = namespace.get('transaction');
+      const currentTransaction: Transaction = namespace.get(
+        'transaction',
+      ) as Transaction;
       if (!currentTransaction && options.propagation === 'MANDATORY') {
         return throwError(
           () => new CustomError('Mandatory transaction required'),
