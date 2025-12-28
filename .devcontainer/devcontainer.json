@@ -1,0 +1,30 @@
+{
+  "name": "radix-api",
+  "dockerComposeFile": ["./docker-compose.yaml"],
+  "service": "node",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "features": {
+    "ghcr.io/devcontainers/features/node": "22.18.0",
+    "ghcr.io/devcontainers-extra/features/zsh-plugins:0": {
+      "plugins": "git dirhistory ssh-agent npm zsh-autosuggestions",
+      "omzPlugins": "https://github.com/zsh-users/zsh-autosuggestions",
+      "username": "node"
+    }
+  },
+  "postCreateCommand": "npm install -g npm@latest && npm install -g yarn@latest && npm install -g @nestjs/cli && yarn install",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "zsh"
+      },
+      "extensions": [
+        "GitHub.copilot",
+        "GitLab.gitlab-workflow",
+        "vscode-icons-team.vscode-icons",
+        "GitHub.vscode-pull-request-github",
+        "GitHub.copilot-chat",
+        "esbenp.prettier-vscode"
+      ]
+    }
+  }
+}

@@ -1,0 +1,50 @@
+version: '3.8'
+services:
+  node:
+    image: mcr.microsoft.com/devcontainers/typescript-node
+    container_name: radix-node
+    user: node
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ..:/workspaces/radix-api:cached
+    command: /bin/sh -c "while sleep 1000; do :; done"
+    ports:
+      - 3000:3000
+
+  postgres:
+    image: postgres:18.1-alpine
+    container_name: radix-postgres
+    command:
+      - 'postgres'
+      - '-c'
+      - 'shared_preload_libraries=pg_stat_statements'
+    restart: 'no'
+    # network_mode: 'host'
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=senha123
+      - POSTGRES_DB=radix
+    volumes:
+      - radix-postgres-data:/var/lib/postgresql/18/docker
+    ports:
+      - 5444:5432
+
+  nats:
+    image: nats:2.12.3-alpine
+    container_name: radix-nats
+    restart: always
+    ports:
+      - 4222:4222
+      - 8222:8222
+
+  redis:
+    image: redis:8.4.0-alpine
+    container_name: radix-redis
+    restart: always
+    ports:
+      - 6379:6379
+
+volumes:
+  radix-postgres-data:
+    driver: local
