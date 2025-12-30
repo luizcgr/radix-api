@@ -3,6 +3,7 @@ import {
   CELULA_REPOSITORY,
   DEVOLUCAO_REPOSITORY,
   MISSAO_REPOSITORY,
+  PERMISSAO_REPOSITORY,
   PESSOA_REPOSITORY,
   SETOR_REPOSITORY,
 } from 'src/constants';
@@ -32,5 +33,9 @@ export const modelsProvider: ValueProvider[] = [
   {
     provide: DEVOLUCAO_REPOSITORY,
     useValue: DevolucaoModel,
+  },
+  {
+    provide: PERMISSAO_REPOSITORY,
+    useValue: PessoaModel,
   },
 ];

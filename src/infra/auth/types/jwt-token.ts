@@ -1,8 +1,8 @@
 export type JwtToken = {
   accessToken: string;
   refreshToken: string;
-  expiration: Date;
-  validity: Date;
+  refreshExpiresIn: Date;
+  expiresIn: Date;
   roles: string[];
   name: string;
   email: string;

@@ -1,4 +1,5 @@
 import { Celula } from 'src/modules/celulas/types/celula';
+import { Permissao } from './permissao';
 
 export type Pessoa = {
   id: number;
@@ -6,4 +7,5 @@ export type Pessoa = {
   cpf: string;
   email: string;
   celula: Celula;
+  permissao: Permissao;
 };

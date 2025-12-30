@@ -13,7 +13,7 @@ async function bootstrap() {
   app.use(compression());
   app.enableCors({ origin: '*' });
   app.useGlobalPipes(
-    new ValidationPipe({      
+    new ValidationPipe({
       transform: true,
       whitelist: true,
       forbidNonWhitelisted: true,

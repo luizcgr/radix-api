@@ -2,11 +2,13 @@ import {
   AutoIncrement,
   BelongsTo,
   Column,
+  HasOne,
   Model,
   PrimaryKey,
   Table,
 } from 'sequelize-typescript';
 import { CelulaModel } from './celula.model';
+import { PermissaoModel } from './permissao.model';
 
 @Table({ tableName: 'tb_pessoa', timestamps: false })
 export class PessoaModel extends Model<PessoaModel> {
@@ -27,4 +29,6 @@ export class PessoaModel extends Model<PessoaModel> {
 
   @BelongsTo(() => CelulaModel, 'celula_id')
   celula: CelulaModel;
+  @HasOne(() => PermissaoModel, 'pessoa_id')
+  permissao: PermissaoModel;
 }

@@ -23,8 +23,10 @@ export class GeradorJwtTokenService {
       refreshToken,
       email: pessoa.email,
       name: pessoa.nome,
-      expiration: this._calcularDataExpiracao(this._env.jwt.refreshExpiresIn),
-      validity: this._calcularDataExpiracao(this._env.jwt.expiresIn),
+      refreshExpiresIn: this._calcularDataExpiracao(
+        this._env.jwt.refreshExpiresIn,
+      ),
+      expiresIn: this._calcularDataExpiracao(this._env.jwt.expiresIn),
       roles: [],
     };
     return token;

@@ -6,6 +6,7 @@ import { Environment } from '../environment/environment.service';
 import { CelulaModel } from './models/celula.model';
 import { DevolucaoModel } from './models/devolucao.model';
 import { MissaoModel } from './models/missao.model';
+import { PermissaoModel } from './models/permissao.model';
 import { PessoaModel } from './models/pessoa.model';
 import { SetorModel } from './models/setor.model';
 
@@ -41,6 +42,7 @@ export const databaseProviders = [
         CelulaModel,
         PessoaModel,
         DevolucaoModel,
+        PermissaoModel,
       ]);
       await sequelize.sync();
       sequelizeDatasource = sequelize;

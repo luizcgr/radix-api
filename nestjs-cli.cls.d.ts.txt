@@ -1,0 +1,9 @@
+import { ClsStore } from 'nestjs-cls';
+import type { Pessoa } from 'src/modules/pessoas/types/pessoa';
+
+declare module 'nestjs-cls' {
+  interface TerminalClsStore extends ClsStore {
+    data: Date;
+    pessoa: Pessoa;
+  }
+}
