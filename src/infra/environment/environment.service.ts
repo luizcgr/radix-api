@@ -19,6 +19,7 @@ type JwtConfig = {
 type AsaasConfig = {
   token: string;
   url: string;
+  webhookAccessToken: string;
 };
 
 @Injectable()
@@ -44,6 +45,7 @@ export class Environment {
     this.asaas = {
       token: configService.get('ASAAS_API_TOKEN')!,
       url: configService.get('ASAAS_API_URL')!,
+      webhookAccessToken: configService.get('ASAAS_WEBHOOK_ACCESS_TOKEN')!,
     };
   }
 }
