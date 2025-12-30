@@ -76,15 +76,15 @@ export class SolicitacaoDevolucaoService {
   ): OperatorFunction<LinkPagamento, DevolucaoModel> {
     return concatMap((linkPagamento) => {
       const model = this._devolucaoRepository.build();
-      model.data = new Date();
+      model.dataCriacao = new Date();
       model.pessoaId = solicitacao.pessoaId;
       model.valorTotal = solicitacao.valor;
       model.mesReferencia = solicitacao.mesReferencia;
       model.anoReferencia = solicitacao.anoReferencia;
-      model.asaasPaymentInvoiceUrl = linkPagamento.invoiceUrl;
-      model.asaasPaymentInvoiceNumber = linkPagamento.invoiceNumber;
-      model.assasPaymentId = linkPagamento.paymentId;
-      model.asaasPaymentCustomer = linkPagamento.customer;
+      model.urlPagamento = linkPagamento.invoiceUrl;
+      model.numeroPagamento = linkPagamento.invoiceNumber;
+      model.pagamentoId = linkPagamento.paymentId;
+      model.codigoCliente = linkPagamento.customer;
       model.status = 'aguardando_pagamento';
       return model.save();
     });

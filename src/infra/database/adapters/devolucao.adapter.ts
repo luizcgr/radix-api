@@ -17,14 +17,15 @@ export class DevolucaoAdapter extends ModelAdapter<DevolucaoModel, Devolucao> {
     }
     return {
       id: model.id,
-      data: model.data,
+      dataCriacao: model.dataCriacao,
+      dataPagamento: model.dataPagamento,
       anoReferencia: model.anoReferencia,
       mesReferencia: model.mesReferencia,
       status: model.status as StatusDevolucao,
-      assasPaymentId: model.assasPaymentId,
-      asaasPaymentInvoiceUrl: model.asaasPaymentInvoiceUrl,
-      asaasPaymentInvoiceNumber: model.asaasPaymentInvoiceNumber,
-      asaasPaymentCustomer: model.asaasPaymentCustomer,
+      pagamentoId: model.pagamentoId,
+      urlPagamento: model.urlPagamento,
+      numeroPagamento: model.numeroPagamento,
+      codigoCliente: model.codigoCliente,
       valorTotal: model.valorTotal,
       pessoa: this._pessoaAdapter.adapt(model.pessoa)!,
     };

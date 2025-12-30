@@ -1,0 +1,34 @@
+import { Body, Controller, Post, Res } from '@nestjs/common';
+import type { Response } from 'express';
+import { Public } from 'src/infra/auth/decorators/public.decorator';
+import type { AsaasWebhookPayload } from 'src/modules/cobranca/interfaces/asaas-webhook-payload';
+import { AsaasWebhookPaymentPayload } from 'src/modules/cobranca/interfaces/asaas-webhook-payment-payload';
+import { NotificacaoPagamentoService } from 'src/modules/devolucao/services/notificacao-pagamento.service';
+import { CustomError } from 'src/utils/custom-error';
+
+@Controller('v1/webhooks')
+export class WebhookController {
+  constructor(
+    private readonly _notificacaoPagamentoService: NotificacaoPagamentoService,
+  ) {}
+
+  @Public()
+  @Post('asaas')
+  processarNotificacaoPagamentoAsaas(
+    @Body() payload: any,
+    @Res() res: Response,
+  ) {
+    const webhook = payload as AsaasWebhookPayload;
+    if (webhook.event === 'PAYMENT_RECEIVED') {
+      const payment = payload as AsaasWebhookPaymentPayload;
+      console.log(payment);
+      this._notificacaoPagamentoService.receber(payment.payment.id).subscribe({
+        next: () => res.status(204).send(),
+        error: (err: CustomError) =>
+          res.status(err.code).json({ status: 'error', message: err.message }),
+      });
+    } else {
+      res.status(204).send();
+    }
+  }
+}

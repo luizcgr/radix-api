@@ -16,7 +16,7 @@ module.exports = {
             type: Sequelize.STRING(20),
             allowNull: false,
           },
-          data: {
+          data_criacao: {
             type: Sequelize.DATE,
             allowNull: false,
             defaultValue: Sequelize.NOW,
@@ -37,23 +37,27 @@ module.exports = {
             type: Sequelize.BIGINT,
             allowNull: false,
           },
-          assas_payment_id: {
-            type: Sequelize.STRING(50),
+          data_pagamento: {
+            type: Sequelize.DATE,
+            allowNull: true,
+          },
+          pagamento_id: {
+            type: Sequelize.TEXT,
             allowNull: false,
             unique: true,
           },
-          asaas_payment_invoice_url: {
-            type: Sequelize.STRING(100),
+          url_pagamento: {
+            type: Sequelize.TEXT,
             allowNull: false,
             unique: true,
           },
-          asaas_payment_invoice_number: {
-            type: Sequelize.STRING(50),
+          numero_pagamento: {
+            type: Sequelize.TEXT,
             allowNull: false,
             unique: true,
           },
-          asaas_payment_customer: {
-            type: Sequelize.STRING(50),
+          codigo_cliente: {
+            type: Sequelize.TEXT,
             allowNull: false,
           },
         },
@@ -63,6 +67,12 @@ module.exports = {
       await queryInterface.addIndex('tb_devolucao', ['pessoa_id'], {
         name: 'idx_devolucao_pessoa_id',
         unique: false,
+        transaction,
+      });
+
+      await queryInterface.addIndex('tb_devolucao', ['pagamento_id'], {
+        name: 'idx_devolucao_pagamento_id',
+        unique: true,
         transaction,
       });
 

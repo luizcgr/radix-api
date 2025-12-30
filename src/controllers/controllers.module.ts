@@ -5,6 +5,7 @@ import { PessoasModule } from 'src/modules/pessoas/pessoas.module';
 import { DevolucaoController } from './devolucao/devolucao.controller';
 import { LoginEmailSenhaController } from './login/login-email-senha.controller';
 import { PessoasController } from './pessoas/pessoas.controller';
+import { WebhookController } from './webhook/webhook.controller';
 
 @Module({
   imports: [AuthModule, PessoasModule, DevolucaoModule],
@@ -12,6 +13,7 @@ import { PessoasController } from './pessoas/pessoas.controller';
     LoginEmailSenhaController,
     PessoasController,
     DevolucaoController,
+    WebhookController,
   ],
 })
 export class ControllersModule {}
