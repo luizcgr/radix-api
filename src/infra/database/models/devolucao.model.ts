@@ -39,5 +39,5 @@ export class DevolucaoModel extends Model<DevolucaoModel> {
   declare codigoCliente: string;
 
   @BelongsTo(() => PessoaModel, 'pessoa_id')
-  pessoa: PessoaModel;
+  declare pessoa: PessoaModel;
 }

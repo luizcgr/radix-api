@@ -1,14 +1,13 @@
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
-import { PESSOA_REPOSITORY } from 'src/constants';
-import { PessoaModel } from '../../database/models/pessoa.model';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { Environment } from '../../environment/environment.service';
+import { PESSOA_REPOSITORY } from 'src/constants';
 import { CelulaModel } from '../../database/models/celula.model';
-import { PermissaoModel } from '../../database/models/permissao.model';
-import { SetorModel } from '../../database/models/setor.model';
-import { MissaoModel } from '../../database/models/missao.model';
+import { PessoaModel } from '../../database/models/pessoa.model';
+import { Environment } from '../../environment/environment.service';
 import { UserInfo } from '../user-info/user-info';
+import { SetorModel } from 'src/infra/database/models/setor.model';
+import { MissaoModel } from 'src/infra/database/models/missao.model';
 
 export interface JwtPayload {
   uid: number;
@@ -36,24 +35,16 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     if (pessoaId) {
       const pessoa = await this._pessoaModel.findByPk(pessoaId, {
         include: [
-          { as: 'permissao', model: PermissaoModel },
           {
-            as: 'celula',
             model: CelulaModel,
-            include: [
-              {
-                as: 'setor',
-                model: SetorModel,
-                include: [{ as: 'missao', model: MissaoModel }],
-              },
-            ],
+            include: [{ model: SetorModel, include: [MissaoModel] }],
           },
         ],
       });
 
       if (pessoa) {
-        this._userInfo.init({ data: new Date(), pessoa });
-        return pessoa.toJSON();
+        this._userInfo.init(pessoa);
+        return pessoa;
       }
     }
     throw new UnauthorizedException();

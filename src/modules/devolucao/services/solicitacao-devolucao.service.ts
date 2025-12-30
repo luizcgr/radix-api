@@ -9,16 +9,17 @@ import {
   throwError,
 } from 'rxjs';
 import { DEVOLUCAO_REPOSITORY } from 'src/constants';
+import { UserInfo } from 'src/infra/auth/user-info/user-info';
 import { DevolucaoAdapter } from 'src/infra/database/adapters/devolucao.adapter';
 import { DevolucaoModel } from 'src/infra/database/models/devolucao.model';
+import { PessoaModel } from 'src/infra/database/models/pessoa.model';
 import { CobrancaService } from 'src/modules/cobranca/services/cobranca.service';
 import { PessoasService } from 'src/modules/pessoas/services/pessoas.service';
 import { Pessoa } from 'src/modules/pessoas/types/pessoa';
 import { CustomError } from 'src/utils/custom-error';
-import { SolicitacaoDevolucao } from '../types/solicitacao-devolucao';
 import { Devolucao } from '../types/devolucao';
+import { SolicitacaoDevolucao } from '../types/solicitacao-devolucao';
 import { LinkPagamento } from '/workspaces/radix-api/src/modules/cobranca/types/link-pagamento';
-import { PessoaModel } from 'src/infra/database/models/pessoa.model';
 
 @Injectable()
 export class SolicitacaoDevolucaoService {
@@ -30,6 +31,7 @@ export class SolicitacaoDevolucaoService {
     @Inject(DEVOLUCAO_REPOSITORY)
     private readonly _devolucaoRepository: typeof DevolucaoModel,
     private readonly _devolucaoAdapter: DevolucaoAdapter,
+    private readonly _userInfo: UserInfo,
   ) {}
 
   gerar(solicitacao: SolicitacaoDevolucao): Observable<Devolucao> {
@@ -64,11 +66,14 @@ export class SolicitacaoDevolucaoService {
     DevolucaoModel,
     DevolucaoModel
   > {
-    return concatMap((devolucaoModel) =>
-      devolucaoModel.reload({
+    return concatMap((devolucaoModel) => {
+      this._logger.log(
+        `Recarregando devolução salva com ID ${devolucaoModel.id} para o usuário ${this._userInfo.userInfo?.nome} da célula ${this._userInfo.userInfo?.celula?.nome}`,
+      );
+      return devolucaoModel.reload({
         include: [{ as: 'pessoa', model: PessoaModel }],
-      }),
-    );
+      });
+    });
   }
 
   private _salvarRegistroDevolucao(

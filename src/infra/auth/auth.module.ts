@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
@@ -11,9 +11,17 @@ import { GeradorJwtTokenService } from './services/gerador-jwt-token.service';
 import { LoginEmailSenhaService } from './services/login-email-senha.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { UserInfo } from './user-info/user-info';
+import { ClsModule } from 'nestjs-cls';
 
+@Global()
 @Module({
   imports: [
+    ClsModule.forRoot({
+      global: true,
+      middleware: {
+        mount: true,
+      },
+    }),
     DatabaseModule,
     EnvironmentModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),

@@ -1,22 +1,17 @@
 import { Injectable } from '@nestjs/common';
+import { ClsService } from 'nestjs-cls';
 import type { Pessoa } from 'src/modules/pessoas/types/pessoa';
-
-export interface UserInfoProps {
-  data: Date;
-  pessoa: Pessoa;
-}
 
 @Injectable()
 export class UserInfo {
-  private _userInfo?: UserInfoProps;
+  constructor(private readonly _cls: ClsService) {}
 
-  constructor() {}
-
-  init(userInfo: UserInfoProps): void {
-    this._userInfo = Object.freeze(userInfo);
+  init(pessoa: Pessoa): void {
+    const obj = Object.freeze(pessoa);
+    this._cls.set('userInfo', obj);
   }
 
-  get userInfo(): UserInfoProps | undefined {
-    return this._userInfo;
+  get userInfo(): Pessoa | undefined {
+    return this._cls.get<Pessoa>('userInfo');
   }
 }

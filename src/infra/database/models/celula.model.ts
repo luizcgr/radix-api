@@ -20,5 +20,5 @@ export class CelulaModel extends Model<CelulaModel> {
   declare setorId: number;
 
   @BelongsTo(() => SetorModel, 'setor_id')
-  setor: SetorModel;
+  declare setor: SetorModel;
 }

@@ -20,5 +20,5 @@ export class SetorModel extends Model<SetorModel> {
   declare missaoId: number;
 
   @BelongsTo(() => MissaoModel, 'missao_id')
-  missao: MissaoModel;
+  declare missao: MissaoModel;
 }

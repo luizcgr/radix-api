@@ -28,7 +28,7 @@ export class PessoaModel extends Model<PessoaModel> {
   declare celulaId: number;
 
   @BelongsTo(() => CelulaModel, 'celula_id')
-  celula: CelulaModel;
+  declare celula: CelulaModel;
   @HasOne(() => PermissaoModel, 'pessoa_id')
-  permissao: PermissaoModel;
+  declare permissao: PermissaoModel;
 }
