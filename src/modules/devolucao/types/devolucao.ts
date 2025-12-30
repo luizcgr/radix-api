@@ -10,6 +10,7 @@ export type Devolucao = {
   anoReferencia: number;
   valorTotal: number;
   pessoa: Pessoa;
+  solicitante: Pessoa;
   pagamentoId: string;
   urlPagamento: string;
   numeroPagamento: string;

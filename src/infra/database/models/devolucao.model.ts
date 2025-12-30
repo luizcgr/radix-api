@@ -25,6 +25,8 @@ export class DevolucaoModel extends Model<DevolucaoModel> {
   declare valorTotal: number;
   @Column({ field: 'pessoa_id', allowNull: false })
   declare pessoaId: number;
+  @Column({ field: 'solicitante_id', allowNull: false })
+  declare solicitanteId: number;
   @Column({ field: 'status', allowNull: false })
   declare status: StatusDevolucao;
   @Column({ field: 'data_pagamento', allowNull: true })
@@ -40,4 +42,6 @@ export class DevolucaoModel extends Model<DevolucaoModel> {
 
   @BelongsTo(() => PessoaModel, 'pessoa_id')
   declare pessoa: PessoaModel;
+  @BelongsTo(() => PessoaModel, 'solicitante_id')
+  declare solicitante: PessoaModel;
 }

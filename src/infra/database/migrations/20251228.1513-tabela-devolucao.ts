@@ -37,6 +37,10 @@ module.exports = {
             type: Sequelize.BIGINT,
             allowNull: false,
           },
+          solicitante_id: {
+            type: Sequelize.BIGINT,
+            allowNull: false,
+          },
           data_pagamento: {
             type: Sequelize.DATE,
             allowNull: true,
@@ -80,6 +84,19 @@ module.exports = {
         fields: ['pessoa_id'],
         type: 'foreign key',
         name: 'fk_devolucao_pessoa',
+        references: {
+          table: 'tb_pessoa',
+          field: 'id',
+        },
+        onDelete: 'RESTRICT',
+        onUpdate: 'RESTRICT',
+        transaction,
+      });
+
+      await queryInterface.addConstraint('tb_devolucao', {
+        fields: ['solicitante_id'],
+        type: 'foreign key',
+        name: 'fk_devolucao_pessoa_solicitante',
         references: {
           table: 'tb_pessoa',
           field: 'id',

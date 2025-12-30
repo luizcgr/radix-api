@@ -83,6 +83,7 @@ export class SolicitacaoDevolucaoService {
       const model = this._devolucaoRepository.build();
       model.dataCriacao = new Date();
       model.pessoaId = solicitacao.pessoaId;
+      model.solicitanteId = this._userInfo.userInfo!.id;
       model.valorTotal = solicitacao.valor;
       model.mesReferencia = solicitacao.mesReferencia;
       model.anoReferencia = solicitacao.anoReferencia;
