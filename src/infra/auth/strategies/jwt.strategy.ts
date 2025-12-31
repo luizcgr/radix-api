@@ -2,12 +2,10 @@ import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PESSOA_REPOSITORY } from 'src/constants';
-import { CelulaModel } from '../../database/models/celula.model';
+import { PermissaoModel } from 'src/infra/database/models/permissao.model';
 import { PessoaModel } from '../../database/models/pessoa.model';
 import { Environment } from '../../environment/environment.service';
 import { UserInfo } from '../user-info/user-info';
-import { SetorModel } from 'src/infra/database/models/setor.model';
-import { MissaoModel } from 'src/infra/database/models/missao.model';
 
 export interface JwtPayload {
   uid: number;
@@ -34,12 +32,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     const pessoaId = Number(payload.uid);
     if (pessoaId) {
       const pessoa = await this._pessoaModel.findByPk(pessoaId, {
-        include: [
-          {
-            model: CelulaModel,
-            include: [{ model: SetorModel, include: [MissaoModel] }],
-          },
-        ],
+        include: [{ model: PermissaoModel, as: 'permissao' }],
       });
 
       if (pessoa) {
