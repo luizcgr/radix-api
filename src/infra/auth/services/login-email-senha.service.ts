@@ -18,7 +18,10 @@ export class LoginEmailSenhaService {
 
   validar({ email, senha }: Credenciais): Observable<JwtToken> {
     return defer(() =>
-      this._pessoaRepository.findOne({ where: { email } }),
+      this._pessoaRepository.findOne({
+        where: { email },
+        include: ['permissao'],
+      }),
     ).pipe(
       concatMap((pessoa) => {
         const existe$ = defer(() => of(pessoa!));
