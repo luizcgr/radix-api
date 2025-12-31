@@ -7,6 +7,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import type { Response } from 'express';
+import moment from 'moment';
 import { Public } from 'src/infra/auth/decorators/public.decorator';
 import { Environment } from 'src/infra/environment/environment.service';
 import type { AsaasWebhookPayload } from 'src/modules/cobranca/interfaces/asaas-webhook-payload';
@@ -35,7 +36,6 @@ export class WebhookController {
     const webhook = payload as AsaasWebhookPayload;
     if (webhook.event === 'PAYMENT_RECEIVED') {
       const payment = payload as AsaasWebhookPaymentPayload;
-      console.log(payment);
       this._notificacaoPagamentoService.receber(payment.payment.id).subscribe({
         next: () => res.status(204).send(),
         error: (err: CustomError) =>
