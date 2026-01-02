@@ -2,6 +2,7 @@ import {
   AutoIncrement,
   BelongsTo,
   Column,
+  DataType,
   Model,
   PrimaryKey,
   Table,
@@ -23,7 +24,11 @@ export class DevolucaoModel extends Model<DevolucaoModel> {
   declare anoReferencia: number;
   @Column({ field: 'valor_total', allowNull: false })
   declare valorTotal: number;
-  @Column({ field: 'pessoa_id', allowNull: false })
+  @Column({
+    field: 'pessoa_id',
+    allowNull: false,
+    type: DataType.BIGINT,
+  })
   declare pessoaId: number;
   @Column({ field: 'solicitante_id', allowNull: false })
   declare solicitanteId: number;

@@ -3,15 +3,16 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { StringValue } from 'ms';
+import { ClsModule } from 'nestjs-cls';
 import { DatabaseModule } from '../database/database.module';
-import { Environment } from '../environment/environment.service';
 import { EnvironmentModule } from '../environment/environment.module';
+import { Environment } from '../environment/environment.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { GeradorJwtTokenService } from './services/gerador-jwt-token.service';
 import { LoginEmailSenhaService } from './services/login-email-senha.service';
+import { RefreshTokenService } from './services/refresh-token.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { UserInfo } from './user-info/user-info';
-import { ClsModule } from 'nestjs-cls';
 
 @Global()
 @Module({
@@ -44,7 +45,8 @@ import { ClsModule } from 'nestjs-cls';
     },
     GeradorJwtTokenService,
     LoginEmailSenhaService,
+    RefreshTokenService,
   ],
-  exports: [LoginEmailSenhaService, UserInfo],
+  exports: [LoginEmailSenhaService, UserInfo, RefreshTokenService],
 })
 export class AuthModule {}

@@ -68,7 +68,7 @@ export class SolicitacaoDevolucaoService {
   > {
     return concatMap((devolucaoModel) => {
       this._logger.log(
-        `Recarregando devolução salva com ID ${devolucaoModel.id} para o usuário ${this._userInfo.userInfo?.nome} da célula ${this._userInfo.userInfo?.celula?.nome}`,
+        `Recarregando devolução salva com ID ${devolucaoModel.id} para o usuário ${this._userInfo.pessoa?.nome} da célula ${this._userInfo.pessoa?.celula?.nome}`,
       );
       return devolucaoModel.reload({
         include: [{ as: 'pessoa', model: PessoaModel }],
@@ -83,7 +83,7 @@ export class SolicitacaoDevolucaoService {
       const model = this._devolucaoRepository.build();
       model.dataCriacao = new Date();
       model.pessoaId = solicitacao.pessoaId;
-      model.solicitanteId = this._userInfo.userInfo!.id;
+      model.solicitanteId = this._userInfo.pessoa!.id;
       model.valorTotal = solicitacao.valor;
       model.mesReferencia = solicitacao.mesReferencia;
       model.anoReferencia = solicitacao.anoReferencia;

@@ -1,14 +1,35 @@
-import { Body, Controller, Post, Res } from '@nestjs/common';
-import { SolicitacaoDevolucaoService } from 'src/modules/devolucao/services/solicitacao-devolucao.service';
-import { SolicitacaoDevolucaoDto } from './solicitacao-devolucao.dto';
+import { Body, Controller, Get, Post, Res } from '@nestjs/common';
 import type { Response } from 'express';
+import { ConsultaDevolucoesService } from 'src/modules/devolucao/services/consulta-devolucoes.service';
+import { SolicitacaoDevolucaoService } from 'src/modules/devolucao/services/solicitacao-devolucao.service';
 import { CustomError } from 'src/utils/custom-error';
+import { SolicitacaoDevolucaoDto } from './solicitacao-devolucao.dto';
+import { UserInfo } from 'src/infra/auth/user-info/user-info';
 
 @Controller({ path: 'v1/devolucoes' })
 export class DevolucaoController {
   constructor(
     private readonly _solicitacaoDevolucaoService: SolicitacaoDevolucaoService,
+    private readonly _consultaDevolucoesService: ConsultaDevolucoesService,
+    private readonly _userInfo: UserInfo,
   ) {}
+
+  @Get()
+  consultarDevolucoesPessoais(@Res() res: Response) {
+    return this._consultaDevolucoesService
+      .consultar({
+        pessoaId: this._userInfo.pessoa!.id,
+        anoReferencia: new Date().getFullYear() - 1,
+      })
+      .subscribe({
+        next: (devolucoes) => {
+          res.status(200).json(devolucoes);
+        },
+        error: (error: CustomError) => {
+          res.status(error.code).json({ message: error.message });
+        },
+      });
+  }
 
   @Post()
   solicitarDevolucao(

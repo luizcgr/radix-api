@@ -25,18 +25,20 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
       secretOrKey: env.jwt.secret,
+      passReqToCallback: true,
     });
   }
 
-  async validate(payload: JwtPayload) {
+  async validate(req: Request, payload: JwtPayload) {
     const pessoaId = Number(payload.uid);
     if (pessoaId) {
       const pessoa = await this._pessoaModel.findByPk(pessoaId, {
         include: [{ model: PermissaoModel, as: 'permissao' }],
       });
 
-      if (pessoa) {
-        this._userInfo.init(pessoa);
+      const accessToken = ExtractJwt.fromAuthHeaderAsBearerToken()(req);
+      if (pessoa && accessToken) {
+        this._userInfo.init(pessoa, accessToken);
         return pessoa;
       }
     }
