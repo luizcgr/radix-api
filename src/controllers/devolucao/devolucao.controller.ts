@@ -19,7 +19,7 @@ export class DevolucaoController {
     return this._consultaDevolucoesService
       .consultar({
         pessoaId: this._userInfo.pessoa!.id,
-        anoReferencia: new Date().getFullYear() - 1,
+        anoReferencia: new Date().getFullYear(),
       })
       .subscribe({
         next: (devolucoes) => {
