@@ -3,11 +3,11 @@ import { JwtService } from '@nestjs/jwt';
 import * as jwt from 'jsonwebtoken';
 import moment from 'moment';
 import ms, { StringValue } from 'ms';
+import { PermissaoModel } from 'src/infra/database/models/permissao.model';
 import { PessoaModel } from 'src/infra/database/models/pessoa.model';
 import { Environment } from 'src/infra/environment/environment.service';
 import { JwtContent } from '../types/jwt-content';
 import { JwtToken } from '../types/jwt-token';
-import { PermissaoModel } from 'src/infra/database/models/permissao.model';
 
 @Injectable()
 export class GeradorJwtTokenService {
@@ -28,7 +28,7 @@ export class GeradorJwtTokenService {
         this._env.jwt.refreshExpiresIn,
       ),
       expiresIn: this._calcularDataExpiracao(this._env.jwt.expiresIn),
-      roles: _montarRoles(pessoa.permissao),
+      roles: this._montarRoles(pessoa.permissao),
     };
     return token;
   }
@@ -57,12 +57,13 @@ export class GeradorJwtTokenService {
   private _geraraPayloadAssinaturaJwt(usuario: PessoaModel): JwtContent {
     return new JwtContent(usuario.id, new Date().getTime());
   }
-}
-function _montarRoles(permissao: PermissaoModel): string[] {
-  const roleMappings: Record<string, () => boolean> = {
-    missao: () => permissao.missao,
-    setor: () => permissao.setor,
-    celula: () => permissao.celula,
-  };
-  return Object.keys(roleMappings).filter((role) => roleMappings[role]());
+
+  private _montarRoles(permissao: PermissaoModel): string[] {
+    const roleMappings: Record<string, () => boolean> = {
+      missao: () => permissao.missao,
+      setor: () => permissao.setor,
+      celula: () => permissao.celula,
+    };
+    return Object.keys(roleMappings).filter((role) => roleMappings[role]());
+  }
 }
