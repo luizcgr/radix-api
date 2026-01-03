@@ -5,6 +5,7 @@ import { SolicitacaoDevolucaoService } from 'src/modules/devolucao/services/soli
 import { CustomError } from 'src/utils/custom-error';
 import { SolicitacaoDevolucaoDto } from './solicitacao-devolucao.dto';
 import { UserInfo } from 'src/infra/auth/user-info/user-info';
+import { Roles } from 'src/infra/auth/decorators/roles.decorator';
 
 @Controller({ path: 'v1/devolucoes' })
 export class DevolucaoController {
@@ -14,7 +15,7 @@ export class DevolucaoController {
     private readonly _userInfo: UserInfo,
   ) {}
 
-  @Get()
+  @Get('pessoais')
   consultarDevolucoesPessoais(@Res() res: Response) {
     return this._consultaDevolucoesService
       .consultar({

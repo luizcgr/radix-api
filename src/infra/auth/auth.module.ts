@@ -13,6 +13,7 @@ import { LoginEmailSenhaService } from './services/login-email-senha.service';
 import { RefreshTokenService } from './services/refresh-token.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { UserInfo } from './user-info/user-info';
+import { RolesGuard } from './guards/roles.guard';
 
 @Global()
 @Module({
@@ -42,6 +43,10 @@ import { UserInfo } from './user-info/user-info';
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
     },
     GeradorJwtTokenService,
     LoginEmailSenhaService,

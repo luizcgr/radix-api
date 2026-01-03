@@ -60,7 +60,6 @@ export class GeradorJwtTokenService {
 }
 function _montarRoles(permissao: PermissaoModel): string[] {
   const roleMappings: Record<string, () => boolean> = {
-    pessoa: () => true,
     missao: () => permissao.missao,
     setor: () => permissao.setor,
     celula: () => permissao.celula,
