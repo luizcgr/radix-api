@@ -1,7 +1,7 @@
 import { Logger } from '@nestjs/common';
 import * as cls from 'cls-hooked';
 import { Sequelize } from 'sequelize-typescript';
-import { RADIX_DS } from 'src/constants';
+import { DATABASE } from 'src/constants';
 import { Environment } from '../environment/environment.service';
 import { CelulaModel } from './models/celula.model';
 import { DevolucaoModel } from './models/devolucao.model';
@@ -19,7 +19,7 @@ export const getSequelizeDatasource = (): Sequelize => {
 };
 export const databaseProviders = [
   {
-    provide: RADIX_DS,
+    provide: DATABASE,
     useFactory: async ({ database: radixDatabase }: Environment) => {
       const sequelize = new Sequelize({
         dialect: 'postgres',

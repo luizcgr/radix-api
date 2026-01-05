@@ -6,6 +6,7 @@ import { DevolucaoController } from './devolucao/devolucao.controller';
 import { LoginEmailSenhaController } from './login/login-email-senha.controller';
 import { PessoasController } from './pessoas/pessoas.controller';
 import { RefreshTokenController } from './refresh-token/refresh-token.controller';
+import { RelatoriosController } from './relatorios/relatorios.controller';
 import { WebhookController } from './webhook/webhook.controller';
 
 @Module({
@@ -16,6 +17,7 @@ import { WebhookController } from './webhook/webhook.controller';
     DevolucaoController,
     WebhookController,
     RefreshTokenController,
+    RelatoriosController,
   ],
 })
 export class ControllersModule {}

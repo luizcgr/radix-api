@@ -3,7 +3,7 @@ import type { Response } from 'express';
 import { ConsultaDevolucoesService } from 'src/modules/devolucao/services/consulta-devolucoes.service';
 import { SolicitacaoDevolucaoService } from 'src/modules/devolucao/services/solicitacao-devolucao.service';
 import { CustomError } from 'src/utils/custom-error';
-import { SolicitacaoDevolucaoDto } from './solicitacao-devolucao.dto';
+import { SolicitacaoDevolucaoPessoalDto } from './solicitacao-devolucao.dto';
 import { UserInfo } from 'src/infra/auth/user-info/user-info';
 import { Roles } from 'src/infra/auth/decorators/roles.decorator';
 
@@ -33,8 +33,8 @@ export class DevolucaoController {
   }
 
   @Post()
-  solicitarDevolucao(
-    @Body() solicitacao: SolicitacaoDevolucaoDto,
+  solicitarDevolucaoPessoal(
+    @Body() solicitacao: SolicitacaoDevolucaoPessoalDto,
     @Res() res: Response,
   ) {
     return this._solicitacaoDevolucaoService
@@ -42,7 +42,7 @@ export class DevolucaoController {
         valor: solicitacao.valor,
         mesReferencia: solicitacao.mesReferencia,
         anoReferencia: solicitacao.anoReferencia,
-        pessoaId: solicitacao.pessoaId,
+        pessoaId: this._userInfo.pessoa!.id,
         formaPagamento: solicitacao.formaPagamento,
       })
       .subscribe({
