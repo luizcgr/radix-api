@@ -55,6 +55,7 @@ export class RelatorioCelulaService {
           totalPessoas,
           fidelidade,
           pessoas: typedResults.map((r) => ({
+            id: r['id'],
             nome: r['nome'],
             devolucao: r['fez_devolucao'],
           })),

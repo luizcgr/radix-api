@@ -1,4 +1,5 @@
 export type PessoaRelatorioCelula = {
+  id: number;
   nome: string;
   devolucao: boolean;
 };

@@ -5,6 +5,7 @@ import { MissaoAdapter } from './adapters/missao.adapter';
 import { PermissaoAdapter } from './adapters/permissao.adapter';
 import { PessoaAdapter } from './adapters/pessoa.adapter';
 import { SetorAdapter } from './adapters/setor.adapter';
+import { DevolucaoCelulaAdapter } from './adapters/devolucao-celula.adapter';
 
 export const adaptersProvider: Provider[] = [
   MissaoAdapter,
@@ -13,4 +14,5 @@ export const adaptersProvider: Provider[] = [
   PessoaAdapter,
   DevolucaoAdapter,
   PermissaoAdapter,
+  DevolucaoCelulaAdapter,
 ];
