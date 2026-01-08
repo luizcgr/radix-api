@@ -23,12 +23,7 @@ export class RolesGuard implements CanActivate {
     }
     for (const role of roles) {
       const attr = this._capitalizar(role);
-      if (
-        user &&
-        typeof user === 'object' &&
-        attr in user &&
-        user.permissao[attr] === true
-      ) {
+      if (user && typeof user === 'object' && user.permissao[attr] === true) {
         return true;
       }
     }

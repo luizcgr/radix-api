@@ -1,5 +1,7 @@
+import { Logger } from '@nestjs/common';
 import { AxiosError } from 'axios';
 import { catchError, OperatorFunction, throwError } from 'rxjs';
+import { BaseError } from 'sequelize';
 
 export class CustomError extends Error {
   constructor(
@@ -9,6 +11,16 @@ export class CustomError extends Error {
     super(message);
   }
 }
+
+export const catchSequelizeError = <T>(
+  message: string,
+  logger: Logger,
+): OperatorFunction<T, T> => {
+  return catchError((error: BaseError) => {
+    logger.error(error, error.stack);
+    return throwError(() => new CustomError(message, 500));
+  });
+};
 
 export const throwHttpError = (error: AxiosError) => {
   const responseData = error.response?.data as

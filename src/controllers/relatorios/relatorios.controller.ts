@@ -11,7 +11,7 @@ export class RelatoriosController {
   ) {}
 
   @Roles('setor', 'missao')
-  @Get('celulas/:celulaId/:mesReferencia/:anoReferencia/')
+  @Get('celulas/:celulaId/mes/:mesReferencia/ano/:anoReferencia/')
   gerarRelatorioCelula(
     @Param('celulaId', ParseIntPipe) celulaId: number,
     @Param('mesReferencia', ParseIntPipe) mesReferencia: number,
@@ -25,7 +25,7 @@ export class RelatoriosController {
   }
 
   @Roles('celula')
-  @Get('minha-celula/:mesReferencia/:anoReferencia/')
+  @Get('minha-celula/mes/:mesReferencia/ano/:anoReferencia/')
   gerarRelatorioMinhaCelula(
     @Param('mesReferencia', ParseIntPipe) mesReferencia: number,
     @Param('anoReferencia', ParseIntPipe) anoReferencia: number,
