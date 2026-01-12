@@ -5,7 +5,9 @@ export type PessoaRelatorioCelula = {
 };
 
 export type RelatorioCelula = {
-  nome: string;
+  celula: string;
+  setor: string;
+  missao: string;
   anoReferencia: number;
   mesReferencia: number;
   totalDevolucoes: number;

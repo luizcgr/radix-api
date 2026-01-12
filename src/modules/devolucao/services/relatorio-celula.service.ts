@@ -5,11 +5,14 @@ import { ParametrosRelatorioCelula } from '../types/parametros-relatorio-celula'
 import { catchError, defer, map, Observable, throwError } from 'rxjs';
 import { RelatorioCelula } from '../types/relatorio-celula';
 import { CustomError } from 'src/utils/custom-error';
+import { BaseError } from 'sequelize';
 
 interface QueryResult {
   id: number;
   nome: string;
   celula: string;
+  setor: string;
+  missao: string;
   fez_devolucao: boolean;
 }
 
@@ -23,16 +26,23 @@ export class RelatorioCelulaService {
     celulaId,
     mesReferencia,
     anoReferencia,
+    setorId,
   }: ParametrosRelatorioCelula): Observable<RelatorioCelula | null> {
     return defer(() =>
-      this._database.query(this._montarQuery(), {
-        replacements: { celulaId, mesReferencia, anoReferencia },
+      this._database.query(this._montarQuery(!!setorId), {
+        replacements: {
+          celulaId,
+          mesReferencia,
+          anoReferencia,
+          setorId: !setorId ? undefined : setorId,
+        },
       }),
     ).pipe(
-      catchError(() => {
+      catchError((error: BaseError) => {
         this._logger.error(
           `Erro ao gerar relatório de célula para célulaId=${celulaId}, mesReferencia=${mesReferencia}, anoReferencia=${anoReferencia}`,
         );
+        this._logger.error(error);
         return throwError(
           () => new CustomError('Erro ao gerar relatório de célula', 500),
         );
@@ -50,7 +60,9 @@ export class RelatorioCelulaService {
         return {
           anoReferencia,
           mesReferencia,
-          nome: typedResults[0]['celula'],
+          celula: typedResults[0]['celula'],
+          setor: typedResults[0]['setor'],
+          missao: typedResults[0]['missao'],
           totalDevolucoes,
           totalPessoas,
           fidelidade,
@@ -59,17 +71,19 @@ export class RelatorioCelulaService {
             nome: r['nome'],
             devolucao: r['fez_devolucao'],
           })),
-        } as RelatorioCelula;
+        };
       }),
     );
   }
 
-  private _montarQuery(): string {
+  private _montarQuery(incluiSetor: boolean): string {
     return `
       select
         tp.id,
         tp.nome ,
         tc.nome celula,
+        ts.nome setor,
+        tm.nome missao,
         case
           when td.status = 'pago' then true
           else false
@@ -82,9 +96,12 @@ export class RelatorioCelulaService {
         and td.status = 'pago'
         and td.ano_referencia = :anoReferencia
         and td.mes_referencia = :mesReferencia
-      left join tb_celula tc on tc.id = tp.celula_id 
+      left join tb_celula tc on tp.celula_id = tc.id
+      left join tb_setor ts on tc.setor_id = ts.id 
+      left join tb_missao tm on ts.missao_id = tm.id       
       where
         tp.celula_id = :celulaId
+        ${incluiSetor ? 'and ts.id = :setorId' : ''}
       order by
         tp.nome asc;
     `;

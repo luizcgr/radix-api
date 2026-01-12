@@ -10,7 +10,22 @@ export class RelatoriosController {
     private readonly _relatorioCelulaService: RelatorioCelulaService,
   ) {}
 
-  @Roles('setor', 'missao')
+  @Roles('setor')
+  @Get('meu-setor/celulas/:celulaId/mes/:mesReferencia/ano/:anoReferencia/')
+  gerarRelatorioCelulaMeuSetor(
+    @Param('celulaId', ParseIntPipe) celulaId: number,
+    @Param('mesReferencia', ParseIntPipe) mesReferencia: number,
+    @Param('anoReferencia', ParseIntPipe) anoReferencia: number,
+  ) {
+    return this._relatorioCelulaService.gerar({
+      celulaId,
+      mesReferencia,
+      anoReferencia,
+      setorId: this._userInfo.pessoa!.celula.setor.id,
+    });
+  }
+
+  @Roles('missao')
   @Get('celulas/:celulaId/mes/:mesReferencia/ano/:anoReferencia/')
   gerarRelatorioCelula(
     @Param('celulaId', ParseIntPipe) celulaId: number,
