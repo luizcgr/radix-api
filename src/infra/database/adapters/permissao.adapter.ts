@@ -10,7 +10,7 @@ export class PermissaoAdapter extends ModelAdapter<PermissaoModel, Permissao> {
       return null;
     }
     const permissao: Permissao = {
-      id: model.id,
+      id: +model.id,
       missao: model.missao,
       setor: model.setor,
       celula: model.celula,

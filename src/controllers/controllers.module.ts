@@ -8,22 +8,16 @@ import { LoginEmailSenhaController } from './login/login-email-senha.controller'
 import { MeuSetorController } from './meu-setor/meu-setor.controller';
 import { MinhaCelulaController } from './minha-celula/minha-celula.controller';
 import { MinhaMissaoController } from './minha-missao/minha-missao.controller';
-import { PessoasController } from './pessoas/pessoas.controller';
 import { RefreshTokenController } from './refresh-token/refresh-token.controller';
-import { RelatoriosController } from './relatorios/relatorios.controller';
-import { SetoresController } from './setores/setores.controller';
 import { WebhookController } from './webhook/webhook.controller';
 
 @Module({
   imports: [AuthModule, PessoasModule, DevolucaoModule, CelulasModule],
   controllers: [
     LoginEmailSenhaController,
-    PessoasController,
     DevolucaoController,
     WebhookController,
     RefreshTokenController,
-    RelatoriosController,
-    SetoresController,
     MinhaCelulaController,
     MeuSetorController,
     MinhaMissaoController,

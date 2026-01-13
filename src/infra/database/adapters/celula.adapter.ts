@@ -15,7 +15,7 @@ export class CelulaAdapter extends ModelAdapter<CelulaModel, Celula> {
       return null;
     }
     return {
-      id: model.id,
+      id: +model.id,
       nome: model.nome,
       setor: this._setorAdapter.adapt(model.setor)!,
     };

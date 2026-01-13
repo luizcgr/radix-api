@@ -17,7 +17,7 @@ export class DevolucaoCelulaAdapter extends ModelAdapter<
       return null;
     }
     return {
-      id: model.id,
+      id: +model.id,
       anoReferencia: model.anoReferencia,
       mesReferencia: model.mesReferencia,
       status: model.status,

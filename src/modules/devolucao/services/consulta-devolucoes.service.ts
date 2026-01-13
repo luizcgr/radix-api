@@ -38,10 +38,6 @@ export class ConsultaDevolucoesService {
     const setorWhere: WhereOptions<SetorModel> = removerUndefined({
       missaoId: consulta.missaoId,
     });
-
-    if (Object.keys(celulaWhere).length) {
-      pessoaWhere['$setor$'] = celulaWhere;
-    }
     return defer(() =>
       this._devolucaoRepository.findAll({
         where: devolucaoWhere,

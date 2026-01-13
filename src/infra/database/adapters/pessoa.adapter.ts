@@ -19,7 +19,7 @@ export class PessoaAdapter extends ModelAdapter<PessoaModel, Pessoa> {
       return null;
     }
     return {
-      id: model.id,
+      id: +model.id,
       nome: model.nome,
       cpf: model.cpf,
       email: model.email,

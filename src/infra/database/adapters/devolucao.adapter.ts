@@ -15,7 +15,7 @@ export class DevolucaoAdapter extends ModelAdapter<DevolucaoModel, Devolucao> {
       return null;
     }
     return {
-      id: model.id,
+      id: +model.id,
       dataCriacao: model.dataCriacao,
       dataPagamento: model.dataPagamento,
       anoReferencia: model.anoReferencia,

@@ -15,7 +15,7 @@ export class SetorAdapter extends ModelAdapter<SetorModel, Setor> {
       return null;
     }
     return {
-      id: model.id,
+      id: +model.id,
       nome: model.nome,
       missao: this._missaoAdapter.adapt(model.missao)!,
     };

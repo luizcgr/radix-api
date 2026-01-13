@@ -10,7 +10,7 @@ export class MissaoAdapter extends ModelAdapter<MissaoModel, Missao> {
       return null;
     }
     return {
-      id: model.id,
+      id: +model.id,
       nome: model.nome,
       ativo: model.ativo,
     };
