@@ -5,6 +5,9 @@ import { DevolucaoModule } from 'src/modules/devolucao/devolucao.module';
 import { PessoasModule } from 'src/modules/pessoas/pessoas.module';
 import { DevolucaoController } from './devolucao/devolucao.controller';
 import { LoginEmailSenhaController } from './login/login-email-senha.controller';
+import { MeuSetorController } from './meu-setor/meu-setor.controller';
+import { MinhaCelulaController } from './minha-celula/minha-celula.controller';
+import { MinhaMissaoController } from './minha-missao/minha-missao.controller';
 import { PessoasController } from './pessoas/pessoas.controller';
 import { RefreshTokenController } from './refresh-token/refresh-token.controller';
 import { RelatoriosController } from './relatorios/relatorios.controller';
@@ -21,6 +24,9 @@ import { WebhookController } from './webhook/webhook.controller';
     RefreshTokenController,
     RelatoriosController,
     SetoresController,
+    MinhaCelulaController,
+    MeuSetorController,
+    MinhaMissaoController,
   ],
 })
 export class ControllersModule {}
