@@ -1,6 +1,6 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { Sequelize } from 'sequelize-typescript';
-import { DATABASE } from 'src/constants';
+import { DATASOURCE } from 'src/constants';
 import { ParametrosRelatorioCelula } from '../types/parametros-relatorio-celula';
 import { catchError, defer, map, Observable, throwError } from 'rxjs';
 import { RelatorioCelula } from '../types/relatorio-celula';
@@ -20,7 +20,7 @@ interface QueryResult {
 export class RelatorioCelulaService {
   private readonly _logger = new Logger(RelatorioCelulaService.name);
 
-  constructor(@Inject(DATABASE) private readonly _database: Sequelize) {}
+  constructor(@Inject(DATASOURCE) private readonly _database: Sequelize) {}
 
   gerar({
     celulaId,
