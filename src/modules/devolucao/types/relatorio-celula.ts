@@ -1,9 +1,3 @@
-export type PessoaRelatorioCelula = {
-  id: number;
-  nome: string;
-  devolucao: boolean;
-};
-
 export type RelatorioCelula = {
   celula: string;
   setor: string;
@@ -13,5 +7,9 @@ export type RelatorioCelula = {
   totalDevolucoes: number;
   totalPessoas: number;
   fidelidade: number;
-  pessoas: PessoaRelatorioCelula[];
+  pessoas: {
+    id: number;
+    nome: string;
+    devolucao: boolean;
+  }[];
 };
