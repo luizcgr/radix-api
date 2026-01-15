@@ -37,7 +37,7 @@ export class MinhaCelulaController {
   }
 
   @Roles('celula')
-  @Get('ano/:anoReferencia/pessoa/:pessoaId')
+  @Get('ano/:anoReferencia/pessoas/:pessoaId')
   consultarDevolucoes(
     @Param('anoReferencia', ParseIntPipe) anoReferencia: number,
     @Param('pessoaId', ParseIntPipe) pessoaId: number,

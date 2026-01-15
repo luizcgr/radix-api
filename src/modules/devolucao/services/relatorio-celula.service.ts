@@ -27,9 +27,12 @@ export class RelatorioCelulaService {
     mesReferencia,
     anoReferencia,
     setorId,
+    missaoId,
   }: ParametrosRelatorioCelula): Observable<RelatorioCelula | null> {
+    const incluiSetorId = !!setorId;
+    const incluiMissaoId = !!missaoId;
     return defer(() =>
-      this._database.query(this._montarQuery(!!setorId), {
+      this._database.query(this._montarQuery(incluiSetorId, incluiMissaoId), {
         replacements: {
           celulaId,
           mesReferencia,
@@ -76,7 +79,7 @@ export class RelatorioCelulaService {
     );
   }
 
-  private _montarQuery(incluiSetor: boolean): string {
+  private _montarQuery(incluiSetor: boolean, incluiMissao: boolean): string {
     return `
       select
         tp.id,
@@ -102,6 +105,7 @@ export class RelatorioCelulaService {
       where
         tp.celula_id = :celulaId
         ${incluiSetor ? 'and ts.id = :setorId' : ''}
+        ${incluiMissao ? 'and tm.id = :missaoId' : ''}
       order by
         tp.nome asc;
     `;

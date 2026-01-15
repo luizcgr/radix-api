@@ -1,6 +1,7 @@
 export type RelatorioSetor = {
   id: number;
   nome: string;
+  missao: string;
   mesReferencia: number;
   anoReferencia: number;
   totalPessoas: number;

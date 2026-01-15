@@ -3,4 +3,5 @@ export type ParametrosRelatorioCelula = {
   mesReferencia: number;
   anoReferencia: number;
   setorId?: number;
+  missaoId?: number;
 };
