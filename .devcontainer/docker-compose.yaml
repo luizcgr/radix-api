@@ -33,7 +33,7 @@ services:
   nats:
     image: nats:2.12.3-alpine
     container_name: radix-nats
-    restart: always
+    restart: 'no'
     ports:
       - 4222:4222
       - 8222:8222
@@ -41,7 +41,7 @@ services:
   redis:
     image: redis:8.4.0-alpine
     container_name: radix-redis
-    restart: always
+    restart: 'no'
     ports:
       - 6379:6379
 

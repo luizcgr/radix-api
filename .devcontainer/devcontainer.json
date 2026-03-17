@@ -1,8 +1,11 @@
 {
   "name": "radix-api",
-  "dockerComposeFile": ["./docker-compose.yaml"],
+  "dockerComposeFile": [
+    "./docker-compose.yaml"
+  ],
   "service": "node",
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "shutdownAction": "stopCompose",
   "features": {
     "ghcr.io/devcontainers/features/node": "22.18.0",
     "ghcr.io/devcontainers-extra/features/zsh-plugins:0": {
