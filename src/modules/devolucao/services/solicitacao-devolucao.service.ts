@@ -20,6 +20,7 @@ import { CustomError } from 'src/utils/custom-error';
 import { Devolucao } from '../types/devolucao';
 import { SolicitacaoDevolucao } from '../types/solicitacao-devolucao';
 import { LinkPagamento } from '/workspaces/radix-api/src/modules/cobranca/types/link-pagamento';
+import { Decimal } from 'decimal.js';
 
 @Injectable()
 export class SolicitacaoDevolucaoService {
@@ -84,7 +85,8 @@ export class SolicitacaoDevolucaoService {
       model.dataCriacao = new Date();
       model.pessoaId = solicitacao.pessoaId;
       model.solicitanteId = this._userInfo.pessoa!.id;
-      model.valorDizimo = solicitacao.valor;
+      model.valorDizimo = solicitacao.valorDizimo;
+      model.valorFundoComunhao = solicitacao.valorFundoComunhao;
       model.mesReferencia = solicitacao.mesReferencia;
       model.anoReferencia = solicitacao.anoReferencia;
       model.urlPagamento = linkPagamento.invoiceUrl;
@@ -103,10 +105,17 @@ export class SolicitacaoDevolucaoService {
       this._cobrancaService.gerar({
         nome: pessoa.nome,
         cpf: pessoa.cpf,
-        valor: solicitacao.valor,
+        valor: this._calcularValorTotal(solicitacao),
         formaPagamento: solicitacao.formaPagamento,
       }),
     );
+  }
+
+  private _calcularValorTotal(solicitacao: SolicitacaoDevolucao): number {
+    const valor = new Decimal(solicitacao.valorDizimo).plus(
+      solicitacao.valorFundoComunhao,
+    );
+    return valor.toNumber();
   }
 
   private _verificarSePessoaExiste(): OperatorFunction<Pessoa | null, Pessoa> {

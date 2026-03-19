@@ -38,7 +38,8 @@ export class DevolucaoController {
   ) {
     return this._solicitacaoDevolucaoService
       .gerar({
-        valor: solicitacao.valor,
+        valorDizimo: solicitacao.valorDizimo,
+        valorFundoComunhao: solicitacao.valorFundoComunhao,
         mesReferencia: solicitacao.mesReferencia,
         anoReferencia: solicitacao.anoReferencia,
         pessoaId: this._userInfo.pessoa!.id,
