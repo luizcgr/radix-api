@@ -71,6 +71,6 @@ module.exports = {
     }),
   down: (queryInterface: QueryInterface) =>
     queryInterface.sequelize.transaction(async (transaction: Transaction) => {
-      return queryInterface.dropTable('tb_permissao', { transaction });
+      await queryInterface.dropTable('tb_permissao', { transaction });
     }),
 };

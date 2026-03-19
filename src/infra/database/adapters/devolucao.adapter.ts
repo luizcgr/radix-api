@@ -25,7 +25,8 @@ export class DevolucaoAdapter extends ModelAdapter<DevolucaoModel, Devolucao> {
       urlPagamento: model.urlPagamento,
       numeroPagamento: model.numeroPagamento,
       codigoCliente: model.codigoCliente,
-      valorTotal: model.valorTotal,
+      valorDizimo: model.valorDizimo,
+      valorFundoComunhao: model.valorFundoComunhao,
       pessoa: this._pessoaAdapter.adapt(model.pessoa)!,
       solicitante: this._pessoaAdapter.adapt(model.solicitante)!,
     };

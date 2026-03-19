@@ -29,7 +29,11 @@ module.exports = {
             type: Sequelize.INTEGER,
             allowNull: false,
           },
-          valor_total: {
+          valor_dizimo: {
+            type: Sequelize.DECIMAL(10, 2),
+            allowNull: false,
+          },
+          valor_fundo_comunhao: {
             type: Sequelize.DECIMAL(10, 2),
             allowNull: false,
           },
@@ -108,6 +112,6 @@ module.exports = {
     }),
   down: (queryInterface: QueryInterface) =>
     queryInterface.sequelize.transaction(async (transaction: Transaction) => {
-      return queryInterface.dropTable('tb_devolucao', { transaction });
+      await queryInterface.dropTable('tb_devolucao', { transaction });
     }),
 };

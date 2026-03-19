@@ -58,7 +58,7 @@ module.exports = {
         transaction,
       });
 
-      return queryInterface.bulkInsert(
+      await queryInterface.bulkInsert(
         'tb_pessoa',
         [
           {
@@ -88,6 +88,6 @@ module.exports = {
     }),
   down: (queryInterface: QueryInterface) =>
     queryInterface.sequelize.transaction(async (transaction: Transaction) => {
-      return queryInterface.dropTable('tb_pessoa', { transaction });
+      await queryInterface.dropTable('tb_pessoa', { transaction });
     }),
 };

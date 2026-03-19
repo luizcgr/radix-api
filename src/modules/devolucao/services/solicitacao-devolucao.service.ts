@@ -84,7 +84,7 @@ export class SolicitacaoDevolucaoService {
       model.dataCriacao = new Date();
       model.pessoaId = solicitacao.pessoaId;
       model.solicitanteId = this._userInfo.pessoa!.id;
-      model.valorTotal = solicitacao.valor;
+      model.valorDizimo = solicitacao.valor;
       model.mesReferencia = solicitacao.mesReferencia;
       model.anoReferencia = solicitacao.anoReferencia;
       model.urlPagamento = linkPagamento.invoiceUrl;

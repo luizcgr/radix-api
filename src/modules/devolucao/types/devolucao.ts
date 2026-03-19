@@ -8,7 +8,8 @@ export type Devolucao = {
   dataPagamento?: Date;
   mesReferencia: number;
   anoReferencia: number;
-  valorTotal: number;
+  valorDizimo: number;
+  valorFundoComunhao: number;
   pessoa: Pessoa;
   solicitante: Pessoa;
   pagamentoId: string;

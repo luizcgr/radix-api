@@ -22,8 +22,10 @@ export class DevolucaoModel extends Model<DevolucaoModel> {
   declare mesReferencia: number;
   @Column({ field: 'ano_referencia', allowNull: false })
   declare anoReferencia: number;
-  @Column({ field: 'valor_total', allowNull: false })
-  declare valorTotal: number;
+  @Column({ field: 'valor_dizimo', allowNull: false })
+  declare valorDizimo: number;
+  @Column({ field: 'valor_fundo_comunhao', allowNull: false })
+  declare valorFundoComunhao: number;
   @Column({
     field: 'pessoa_id',
     allowNull: false,
