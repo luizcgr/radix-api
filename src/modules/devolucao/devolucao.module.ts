@@ -5,6 +5,7 @@ import { ConsultaDevolucoesService } from './services/consulta-devolucoes.servic
 import { NotificacaoPagamentoService } from './services/notificacao-pagamento.service';
 import { RelatorioCelulaService } from './services/relatorio-celula.service';
 import { RelatorioDevolucaoService } from './services/relatorio-devolucao.service';
+import { RelatorioEvolucaoService } from './services/relatorio-evolucao.service';
 import { RelatorioMissaoService } from './services/relatorio-missao.service';
 import { RelatorioSetorService } from './services/relatorio-setor.service';
 import { SolicitacaoDevolucaoService } from './services/solicitacao-devolucao.service';
@@ -18,6 +19,7 @@ import { SolicitacaoDevolucaoService } from './services/solicitacao-devolucao.se
     RelatorioCelulaService,
     RelatorioSetorService,
     RelatorioMissaoService,
+    RelatorioEvolucaoService,
     RelatorioDevolucaoService,
   ],
   exports: [

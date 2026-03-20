@@ -4,12 +4,12 @@ import { BaseError } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
 import { DATASOURCE } from 'src/constants';
 import { CustomError } from 'src/utils/custom-error';
-import { ItemEvolucao } from '../types/item-evolucao';
 import { ParametrosRelatorioCelula } from '../types/parametros-relatorio-celula';
 import {
   DadosBasicosRelatorio,
   RelatorioCelula,
 } from '../types/relatorio-celula';
+import { RelatorioEvolucaoService } from './relatorio-evolucao.service';
 
 interface DadosBasicosQueryResult {
   id: number;
@@ -20,27 +20,23 @@ interface DadosBasicosQueryResult {
   fez_devolucao: boolean;
 }
 
-interface EvolucaoQueryResult {
-  mes: string;
-  mes_formatado: string;
-  valor: number;
-}
-
 @Injectable()
 export class RelatorioCelulaService {
   private readonly _logger = new Logger(RelatorioCelulaService.name);
 
-  constructor(@Inject(DATASOURCE) private readonly _database: Sequelize) {}
+  constructor(
+    @Inject(DATASOURCE) private readonly _database: Sequelize,
+    private readonly _relatorioEvolucaoService: RelatorioEvolucaoService,
+  ) {}
 
   gerar(
     parametros: ParametrosRelatorioCelula,
   ): Observable<RelatorioCelula | null> {
     return forkJoin({
       dadosBasicos: this._consultarDadosBasicos(parametros),
-      evolucaoQuantidades: this.consultarEvolucaoQuantidades(parametros),
-      evolucaoValores: this.consultarEvolucaoValores(parametros),
+      evolucao: this._relatorioEvolucaoService.gerar(parametros),
     }).pipe(
-      map(({ dadosBasicos, evolucaoQuantidades, evolucaoValores }) => {
+      map(({ dadosBasicos, evolucao }) => {
         if (!dadosBasicos) {
           return null;
         }
@@ -54,75 +50,9 @@ export class RelatorioCelulaService {
           totalPessoas: dadosBasicos.totalPessoas,
           fidelidade: dadosBasicos.fidelidade,
           pessoas: dadosBasicos.pessoas,
-          evolucao: {
-            quantidades: evolucaoQuantidades,
-            valores: evolucaoValores,
-          },
+          evolucao,
         };
         return relatorio;
-      }),
-    );
-  }
-
-  private consultarEvolucaoQuantidades(
-    parametros: ParametrosRelatorioCelula,
-  ): Observable<ItemEvolucao[]> {
-    const { setorId, missaoId } = parametros;
-    const incluiSetorId = !!setorId;
-    const incluiMissaoId = !!missaoId;
-    return this.consultarEvolucao(
-      parametros,
-      this._montarQueryEvolucaoQuantidades(incluiSetorId, incluiMissaoId),
-    );
-  }
-
-  private consultarEvolucaoValores(
-    parametros: ParametrosRelatorioCelula,
-  ): Observable<ItemEvolucao[]> {
-    const { setorId, missaoId } = parametros;
-    const incluiSetorId = !!setorId;
-    const incluiMissaoId = !!missaoId;
-    return this.consultarEvolucao(
-      parametros,
-      this.montarQueryEvolucaoValores(incluiSetorId, incluiMissaoId),
-    );
-  }
-
-  private consultarEvolucao(
-    parametros: ParametrosRelatorioCelula,
-    sql: string,
-  ): Observable<ItemEvolucao[]> {
-    const { setorId, celulaId, mesReferencia, anoReferencia } = parametros;
-    return defer(() =>
-      this._database.query(sql, {
-        replacements: {
-          celulaId,
-          mesReferencia,
-          anoReferencia,
-          setorId: !setorId ? undefined : setorId,
-        },
-      }),
-    ).pipe(
-      catchError((error: BaseError) => {
-        this._logger.error(
-          `Erro ao consultar evolução de quantidades para célulaId=${celulaId}, mesReferencia=${mesReferencia}, anoReferencia=${anoReferencia}`,
-        );
-        this._logger.error(error);
-        return throwError(
-          () =>
-            new CustomError('Erro ao consultar evolução de quantidades', 500),
-        );
-      }),
-      map(([results]) => {
-        const typedResults = results as EvolucaoQueryResult[];
-        return typedResults.map((r) => {
-          const item: ItemEvolucao = {
-            mes: r['mes'] ?? '',
-            mesFormatado: r['mes_formatado'] ?? '',
-            valor: +r['valor'],
-          };
-          return item;
-        });
       }),
     );
   }
@@ -217,64 +147,6 @@ export class RelatorioCelulaService {
         ${incluiMissao ? 'and tm.id = :missaoId' : ''}
       order by
         tp.nome asc;
-    `;
-  }
-
-  private _montarQueryEvolucaoQuantidades(
-    incluiSetor: boolean,
-    incluiMissao: boolean,
-  ): string {
-    return `
-    WITH
-      meses AS (
-          SELECT DATE_TRUNC(
-                  'month', CURRENT_DATE - INTERVAL '1 month' * s.num
-              ) AS data_mes
-          FROM GENERATE_SERIES(0, 11) AS s (num)
-      )
-    SELECT
-        TO_CHAR(m.data_mes, 'YYYY-MM') AS mes,
-        TO_CHAR(m.data_mes, 'MM/YYYY') AS mes_formatado,
-        COALESCE(COUNT(d.id), 0) AS valor
-   FROM meses m
-        LEFT JOIN tb_devolucao d ON DATE_TRUNC('month', d.data_pagamento) = m.data_mes
-        AND d.data_pagamento IS NOT NULL
-        left join tb_pessoa tp on tp.id = d.pessoa_id and tp.celula_id = :celulaId
-        left join tb_celula tc on tc.id = tp.celula_id ${incluiSetor ? 'and tc.setor_id = :setorId' : ''}
-        left join tb_setor ts on ts.id = tc.setor_id ${incluiMissao ? 'and ts.missao_id = :missaoId' : ''}
-        left join tb_missao tm on tm.id = ts.missao_id        
-    GROUP BY
-        m.data_mes
-    ORDER BY m.data_mes ASC;     
-    `;
-  }
-
-  public montarQueryEvolucaoValores(
-    incluiSetor: boolean,
-    incluiMissao: boolean,
-  ): string {
-    return `
-    WITH
-      meses AS (
-          SELECT DATE_TRUNC(
-                  'month', CURRENT_DATE - INTERVAL '1 month' * s.num
-              ) AS data_mes
-          FROM GENERATE_SERIES(0, 11) AS s (num)
-      )
-    SELECT
-        TO_CHAR(m.data_mes, 'YYYY-MM') AS mes,
-        TO_CHAR(m.data_mes, 'MM/YYYY') AS mes_formatado,
-        COALESCE(SUM(d.valor_dizimo), 0) AS valor
-    FROM meses m
-        LEFT JOIN tb_devolucao d ON DATE_TRUNC('month', d.data_pagamento) = m.data_mes
-        AND d.data_pagamento IS NOT NULL
-        left join tb_pessoa tp on tp.id = d.pessoa_id and tp.celula_id = :celulaId
-        left join tb_celula tc on tc.id = tp.celula_id ${incluiSetor ? 'and tc.setor_id = :setorId' : ''}
-        left join tb_setor ts on ts.id = tc.setor_id ${incluiMissao ? 'and ts.missao_id = :missaoId' : ''}
-        left join tb_missao tm on tm.id = ts.missao_id        
-    GROUP BY
-        m.data_mes
-    ORDER BY m.data_mes ASC;    
     `;
   }
 }
