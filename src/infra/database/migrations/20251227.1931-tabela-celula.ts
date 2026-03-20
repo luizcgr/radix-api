@@ -47,39 +47,15 @@ module.exports = {
         'tb_celula',
         [
           {
-            nome: 'P1 e P2',
-            setor_id: 1,
-          },
-          {
-            nome: 'D1 e D2',
-            setor_id: 1,
-          },
-          {
             nome: 'Consagrados',
             setor_id: 1,
-          },
-          {
-            nome: 'Definitivos',
-            setor_id: 1,
-          },
-          {
-            nome: 'P1',
-            setor_id: 2,
-          },
-          {
-            nome: 'P2',
-            setor_id: 2,
-          },
-          {
-            nome: 'D1 e D2',
-            setor_id: 2,
           },
           {
             nome: 'Consagrados',
             setor_id: 2,
           },
           {
-            nome: 'Única',
+            nome: 'Consagrados',
             setor_id: 3,
           },
         ],

@@ -126,18 +126,17 @@ export class RelatorioCelulaService {
         tc.nome celula,
         ts.nome setor,
         tm.nome missao,
-        case
-          when td.status = 'pago' then true
-          else false
-        end as fez_devolucao
+        exists (
+          select 1
+          from tb_devolucao td
+          where
+            td.pessoa_id = tp.id
+            and td.status = 'pago'
+            and td.ano_referencia = :anoReferencia
+            and td.mes_referencia = :mesReferencia
+        ) as fez_devolucao
       from
         tb_pessoa tp
-      left join tb_devolucao td
-          on
-        td.pessoa_id = tp.id
-        and td.status = 'pago'
-        and td.ano_referencia = :anoReferencia
-        and td.mes_referencia = :mesReferencia
       left join tb_celula tc on tp.celula_id = tc.id
       left join tb_setor ts on tc.setor_id = ts.id 
       left join tb_missao tm on ts.missao_id = tm.id       

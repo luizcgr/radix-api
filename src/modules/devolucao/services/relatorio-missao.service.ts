@@ -90,12 +90,20 @@ export class RelatorioMissaoService {
         tm.nome nome_missao,
         COUNT(distinct tc.id) as total_celulas,
         COUNT(distinct tp.id) as total_pessoas,
-        SUM(case when td.status = 'pago' and td.ano_referencia = 2026 and td.mes_referencia = 1 then 1 else 0 end) as total_devolucoes,
+        COUNT(
+          distinct case
+            when td.status = 'pago' then tp.id
+            else null
+          end
+        ) as total_devolucoes,
         coalesce(
           ROUND(
-            SUM(
-                case when td.status = 'pago' and td.ano_referencia = :anoReferencia and td.mes_referencia = :mesReferencia then 1 else 0 end)::numeric * 100 / nullif(COUNT(distinct tp.id)
-            , 0)
+            COUNT(
+              distinct case
+                when td.status = 'pago' then tp.id
+                else null
+              end
+            )::numeric * 100 / nullif(COUNT(distinct tp.id), 0)
           )
         , 0) as fidelidade
       from

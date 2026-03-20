@@ -100,26 +100,20 @@ export class RelatorioSetorService {
             tc.nome as nome_celula,
             tm.nome as nome_missao,
             COUNT(distinct tp.id) as total_pessoas,
-            SUM(
-                case
-                    when td.status = 'pago'
-                    and td.ano_referencia = :anoReferencia
-                    and td.mes_referencia = :mesReferencia
-                    then 1
-                    else 0
-                end
+            COUNT(
+              distinct case
+                when td.status = 'pago' then tp.id
+                else null
+              end
             ) as total_devolucoes,
             coalesce(
                 ROUND(
-                    SUM(
-                        case
-                            when td.status = 'pago'
-                            and td.ano_referencia = :anoReferencia
-                            and td.mes_referencia = :mesReferencia
-                            then 1
-                            else 0
-                        end
-                    )::numeric * 100
+                COUNT(
+                  distinct case
+                    when td.status = 'pago' then tp.id
+                    else null
+                  end
+                )::numeric * 100
                     / nullif(COUNT(distinct tp.id), 0)
                 ),
                 0

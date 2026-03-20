@@ -98,7 +98,19 @@ export class RelatorioEvolucaoService {
     SELECT
         TO_CHAR(m.data_mes, 'YYYY-MM') AS mes,
         TO_CHAR(m.data_mes, 'MM/YYYY') AS mes_formatado,
-        COALESCE(COUNT(d.id), 0) AS valor
+        COALESCE(
+          COUNT(
+            DISTINCT CASE
+              WHEN d.status = 'pago'
+              ${'celulaId' in parametros ? 'and tp.id is not null' : ''}
+              ${'setorId' in parametros ? 'and tc.id is not null' : ''}
+              ${'missaoId' in parametros ? 'and ts.id is not null' : ''}
+              THEN d.pessoa_id
+              ELSE NULL
+            END
+          ),
+          0
+        ) AS valor
    FROM meses m
         LEFT JOIN tb_devolucao d ON DATE_TRUNC('month', d.data_pagamento) = m.data_mes
         AND d.data_pagamento IS NOT NULL
@@ -126,7 +138,19 @@ export class RelatorioEvolucaoService {
     SELECT
         TO_CHAR(m.data_mes, 'YYYY-MM') AS mes,
         TO_CHAR(m.data_mes, 'MM/YYYY') AS mes_formatado,
-        COALESCE(SUM(d.valor_dizimo), 0) AS valor
+        COALESCE(
+          SUM(
+            CASE
+              WHEN d.status = 'pago'
+              ${'celulaId' in parametros ? 'and tp.id is not null' : ''}
+              ${'setorId' in parametros ? 'and tc.id is not null' : ''}
+              ${'missaoId' in parametros ? 'and ts.id is not null' : ''}
+              THEN d.valor_dizimo
+              ELSE 0
+            END
+          ),
+          0
+        ) AS valor
     FROM meses m
         LEFT JOIN tb_devolucao d ON DATE_TRUNC('month', d.data_pagamento) = m.data_mes
         AND d.data_pagamento IS NOT NULL
