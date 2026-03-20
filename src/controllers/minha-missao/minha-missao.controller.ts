@@ -73,7 +73,6 @@ export class MinhaMissaoController {
       .gerar({
         anoReferencia,
         pessoaId,
-        celulaId: this._userInfo.pessoa!.celula.id,
       })
       .subscribe({
         error: (error: CustomError) =>
