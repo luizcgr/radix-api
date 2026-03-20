@@ -1,10 +1,11 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { defer, map, Observable } from 'rxjs';
+import { defer, forkJoin, map, Observable } from 'rxjs';
 import { Sequelize } from 'sequelize-typescript';
 import { DATASOURCE } from 'src/constants';
 import { catchSequelizeError } from 'src/utils/custom-error';
 import { ParametrosRelatorioMissao } from '../types/parametros-relatorio-missao';
 import { RelatorioMissao } from '../types/relatorio-missao';
+import { RelatorioEvolucaoService } from './relatorio-evolucao.service';
 
 interface QueryResult {
   setor_id: number;
@@ -20,13 +21,25 @@ interface QueryResult {
 export class RelatorioMissaoService {
   private readonly _logger = new Logger(RelatorioMissaoService.name);
 
-  constructor(@Inject(DATASOURCE) private readonly _database: Sequelize) {}
+  constructor(
+    @Inject(DATASOURCE) private readonly _database: Sequelize,
+    private readonly _relatorioEvolucaoService: RelatorioEvolucaoService,
+  ) {}
 
-  gerar({
-    missaoId,
-    anoReferencia,
-    mesReferencia,
-  }: ParametrosRelatorioMissao): Observable<RelatorioMissao> {
+  gerar(parametros: ParametrosRelatorioMissao): Observable<RelatorioMissao> {
+    return forkJoin({
+      dadosBasicos: this._consultarDadosBasicosMissao(parametros),
+      evolucao: this._relatorioEvolucaoService.gerar(parametros),
+    }).pipe(
+      map(({ dadosBasicos, evolucao }) => ({
+        ...dadosBasicos,
+        evolucao,
+      })),
+    );
+  }
+
+  private _consultarDadosBasicosMissao(parametros: ParametrosRelatorioMissao) {
+    const { missaoId, anoReferencia, mesReferencia } = parametros;
     return defer(() =>
       this._database.query(this._montarQuery(), {
         replacements: {

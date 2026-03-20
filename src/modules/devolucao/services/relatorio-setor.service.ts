@@ -1,10 +1,14 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { defer, map, Observable } from 'rxjs';
+import { defer, forkJoin, map, Observable } from 'rxjs';
 import { Sequelize } from 'sequelize';
 import { DATASOURCE } from 'src/constants';
 import { catchSequelizeError } from 'src/utils/custom-error';
 import { ParametrosRelatorioSetor } from '../types/parametros-relatorio-setor';
-import { RelatorioSetor } from '../types/relatorio-setor';
+import {
+  DadosBasicosRelatorioSetor,
+  RelatorioSetor,
+} from '../types/relatorio-setor';
+import { RelatorioEvolucaoService } from './relatorio-evolucao.service';
 
 interface QueryResult {
   setor_id: number;
@@ -22,14 +26,27 @@ interface QueryResult {
 export class RelatorioSetorService {
   private readonly _logger = new Logger(RelatorioSetorService.name);
 
-  constructor(@Inject(DATASOURCE) private readonly _database: Sequelize) {}
+  constructor(
+    @Inject(DATASOURCE) private readonly _database: Sequelize,
+    private readonly _relatorioEvolucaoService: RelatorioEvolucaoService,
+  ) {}
 
-  gerar({
-    setorId,
-    anoReferencia,
-    mesReferencia,
-    missaoId,
-  }: ParametrosRelatorioSetor): Observable<RelatorioSetor> {
+  gerar(parametros: ParametrosRelatorioSetor): Observable<RelatorioSetor> {
+    return forkJoin({
+      dadosBasicos: this._consultarDadosBasicosRelatorio(parametros),
+      evolucao: this._relatorioEvolucaoService.gerar(parametros),
+    }).pipe(
+      map(({ dadosBasicos, evolucao }) => ({
+        ...dadosBasicos,
+        evolucao,
+      })),
+    );
+  }
+
+  private _consultarDadosBasicosRelatorio(
+    parametros: ParametrosRelatorioSetor,
+  ): Observable<DadosBasicosRelatorioSetor> {
+    const { setorId, anoReferencia, mesReferencia, missaoId } = parametros;
     const incluiMissaoId = !!missaoId;
     return defer(() =>
       this._database.query(this._montarQuery(incluiMissaoId), {
@@ -69,7 +86,7 @@ export class RelatorioSetorService {
             totalDevolucoes: +r['total_devolucoes'],
             fidelidade: +r['fidelidade'],
           })),
-        } as RelatorioSetor;
+        };
       }),
     );
   }

@@ -1,4 +1,6 @@
-export type RelatorioSetor = {
+import { ItemEvolucao } from './item-evolucao';
+
+export type DadosBasicosRelatorioSetor = {
   id: number;
   nome: string;
   missao: string;
@@ -14,4 +16,11 @@ export type RelatorioSetor = {
     totalDevolucoes: number;
     fidelidade: number;
   }[];
+};
+
+export type RelatorioSetor = DadosBasicosRelatorioSetor & {
+  evolucao: {
+    quantidades: ItemEvolucao[];
+    valores: ItemEvolucao[];
+  };
 };

@@ -1,6 +1,6 @@
 import { ItemEvolucao } from './item-evolucao';
 
-export type DadosBasicosRelatorio = {
+export type DadosBasicosRelatorioCelula = {
   anoReferencia: number;
   mesReferencia: number;
   celula: string;
@@ -12,7 +12,7 @@ export type DadosBasicosRelatorio = {
   pessoas: { id: number; nome: string; devolucao: boolean }[];
 };
 
-export type RelatorioCelula = DadosBasicosRelatorio & {
+export type RelatorioCelula = DadosBasicosRelatorioCelula & {
   evolucao: {
     quantidades: ItemEvolucao[];
     valores: ItemEvolucao[];

@@ -112,7 +112,7 @@ export class RelatorioEvolucaoService {
     `;
   }
 
-  public montarQueryEvolucaoValores(
+  private montarQueryEvolucaoValores(
     parametros: ParametrosRelatorioEvolucao,
   ): string {
     return `

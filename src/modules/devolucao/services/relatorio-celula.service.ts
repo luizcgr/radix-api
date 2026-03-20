@@ -6,7 +6,7 @@ import { DATASOURCE } from 'src/constants';
 import { CustomError } from 'src/utils/custom-error';
 import { ParametrosRelatorioCelula } from '../types/parametros-relatorio-celula';
 import {
-  DadosBasicosRelatorio,
+  DadosBasicosRelatorioCelula,
   RelatorioCelula,
 } from '../types/relatorio-celula';
 import { RelatorioEvolucaoService } from './relatorio-evolucao.service';
@@ -59,7 +59,7 @@ export class RelatorioCelulaService {
 
   private _consultarDadosBasicos(
     parametros: ParametrosRelatorioCelula,
-  ): Observable<DadosBasicosRelatorio | null> {
+  ): Observable<DadosBasicosRelatorioCelula | null> {
     const { setorId, missaoId, celulaId, mesReferencia, anoReferencia } =
       parametros;
     const incluiSetorId = !!setorId;
