@@ -1,9 +1,12 @@
-import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe, Res } from '@nestjs/common';
+import type { Response } from 'express';
 import { Roles } from 'src/infra/auth/decorators/roles.decorator';
 import { UserInfo } from 'src/infra/auth/user-info/user-info';
 import { RelatorioCelulaService } from 'src/modules/devolucao/services/relatorio-celula.service';
+import { RelatorioDevolucaoService } from 'src/modules/devolucao/services/relatorio-devolucao.service';
 import { RelatorioMissaoService } from 'src/modules/devolucao/services/relatorio-missao.service';
 import { RelatorioSetorService } from 'src/modules/devolucao/services/relatorio-setor.service';
+import { CustomError } from 'src/utils/custom-error';
 
 @Controller({ path: 'v1/minha-missao' })
 export class MinhaMissaoController {
@@ -12,6 +15,7 @@ export class MinhaMissaoController {
     private readonly _relatorioMissaoService: RelatorioMissaoService,
     private readonly _relatorioSetorService: RelatorioSetorService,
     private readonly _relatorioCelulaService: RelatorioCelulaService,
+    private readonly _relatorioDevolucaoService: RelatorioDevolucaoService,
   ) {}
 
   @Roles('missao')
@@ -56,5 +60,27 @@ export class MinhaMissaoController {
       mesReferencia,
       anoReferencia,
     });
+  }
+
+  @Roles('missao')
+  @Get('pessoas/:pessoaId/ano/:anoReferencia')
+  consultarRelatorioPessoa(
+    @Param('pessoaId', ParseIntPipe) pessoaId: number,
+    @Param('anoReferencia', ParseIntPipe) anoReferencia: number,
+    @Res() res: Response,
+  ) {
+    return this._relatorioDevolucaoService
+      .gerar({
+        anoReferencia,
+        pessoaId,
+        celulaId: this._userInfo.pessoa!.celula.id,
+      })
+      .subscribe({
+        error: (error: CustomError) =>
+          res.status(error.code).json({ message: error.message }),
+        next: (relatorio) => {
+          res.status(200).json(relatorio);
+        },
+      });
   }
 }

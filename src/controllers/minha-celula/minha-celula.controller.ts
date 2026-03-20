@@ -4,6 +4,7 @@ import { Roles } from 'src/infra/auth/decorators/roles.decorator';
 import { UserInfo } from 'src/infra/auth/user-info/user-info';
 import { ConsultaDevolucoesService } from 'src/modules/devolucao/services/consulta-devolucoes.service';
 import { RelatorioCelulaService } from 'src/modules/devolucao/services/relatorio-celula.service';
+import { RelatorioDevolucaoService } from 'src/modules/devolucao/services/relatorio-devolucao.service';
 import { CustomError } from 'src/utils/custom-error';
 
 @Controller({ path: 'v1/minha-celula' })
@@ -12,6 +13,7 @@ export class MinhaCelulaController {
     private readonly _userInfo: UserInfo,
     private readonly _relatorioCelulaService: RelatorioCelulaService,
     private readonly _consultaDevolucoesService: ConsultaDevolucoesService,
+    private readonly _relatorioDevolucaoService: RelatorioDevolucaoService,
   ) {}
 
   @Roles('celula')
@@ -43,8 +45,8 @@ export class MinhaCelulaController {
     @Param('pessoaId', ParseIntPipe) pessoaId: number,
     @Res() res: Response,
   ) {
-    return this._consultaDevolucoesService
-      .consultar({
+    return this._relatorioDevolucaoService
+      .gerar({
         anoReferencia,
         pessoaId,
         celulaId: this._userInfo.pessoa!.celula.id,
@@ -52,8 +54,8 @@ export class MinhaCelulaController {
       .subscribe({
         error: (error: CustomError) =>
           res.status(error.code).json({ message: error.message }),
-        next: (devolucoes) => {
-          res.status(200).json(devolucoes);
+        next: (relatorio) => {
+          res.status(200).json(relatorio);
         },
       });
   }

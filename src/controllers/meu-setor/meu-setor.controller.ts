@@ -5,6 +5,7 @@ import { UserInfo } from 'src/infra/auth/user-info/user-info';
 import { ConsultaCelulasService } from 'src/modules/celulas/services/consulta-celulas.service';
 import { ConsultaDevolucoesService } from 'src/modules/devolucao/services/consulta-devolucoes.service';
 import { RelatorioCelulaService } from 'src/modules/devolucao/services/relatorio-celula.service';
+import { RelatorioDevolucaoService } from 'src/modules/devolucao/services/relatorio-devolucao.service';
 import { RelatorioSetorService } from 'src/modules/devolucao/services/relatorio-setor.service';
 
 @Controller({ path: 'v1/meu-setor' })
@@ -15,6 +16,7 @@ export class MeuSetorController {
     private readonly _relatorioCelulaService: RelatorioCelulaService,
     private readonly _consultaDevolucoesService: ConsultaDevolucoesService,
     private readonly _relatorioSetorService: RelatorioSetorService,
+    private readonly _relatorioDevolucaoService: RelatorioDevolucaoService,
   ) {}
 
   @Roles('setor')
@@ -65,7 +67,7 @@ export class MeuSetorController {
     @Param('anoReferencia', ParseIntPipe) anoReferencia: number,
     @Param('pessoaId', ParseIntPipe) pessoaId: number,
   ) {
-    return this._consultaDevolucoesService.consultar({
+    return this._relatorioDevolucaoService.gerar({
       anoReferencia,
       pessoaId,
       setorId: this._userInfo.pessoa!.celula.setor.id,
