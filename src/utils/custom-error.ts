@@ -1,4 +1,4 @@
-import { Logger } from '@nestjs/common';
+import { InternalServerErrorException, Logger } from '@nestjs/common';
 import { AxiosError } from 'axios';
 import { catchError, OperatorFunction, throwError } from 'rxjs';
 import { BaseError } from 'sequelize';
@@ -18,7 +18,7 @@ export const catchSequelizeError = <T>(
 ): OperatorFunction<T, T> => {
   return catchError((error: BaseError) => {
     logger.error(error, error.stack);
-    return throwError(() => new CustomError(message, 500));
+    return throwError(() => new InternalServerErrorException(message));
   });
 };
 

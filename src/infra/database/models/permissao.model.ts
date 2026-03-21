@@ -22,6 +22,8 @@ export class PermissaoModel extends Model<PermissaoModel> {
   declare setor: boolean;
   @Column({ allowNull: false, defaultValue: false })
   declare celula: boolean;
+  @Column({ allowNull: false, defaultValue: false })
+  declare admin: boolean;
   @BelongsTo(() => PessoaModel, 'pessoaId')
   declare pessoa: PessoaModel;
 }

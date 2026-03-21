@@ -6,7 +6,7 @@ import { PermissaoModel } from 'src/infra/database/models/permissao.model';
 import { PessoaModel } from '../../database/models/pessoa.model';
 import { Environment } from '../../environment/environment.service';
 import { UserInfo } from '../user-info/user-info';
-import { PessoaAdapter } from 'src/infra/database/adapters/pessoa.adapter';
+import { PessoaMapper } from 'src/infra/database/mappers/pessoa.mapper';
 import { CelulaModel } from 'src/infra/database/models/celula.model';
 import { SetorModel } from 'src/infra/database/models/setor.model';
 import { MissaoModel } from 'src/infra/database/models/missao.model';
@@ -24,7 +24,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     @Inject(PESSOA_REPOSITORY)
     private readonly _pessoaModel: typeof PessoaModel,
     private readonly _userInfo: UserInfo,
-    private readonly _pessoaAdapter: PessoaAdapter,
+    private readonly _pessoaAdapter: PessoaMapper,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -56,7 +56,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
 
       const accessToken = ExtractJwt.fromAuthHeaderAsBearerToken()(req);
       if (pessoaModel && accessToken) {
-        const pessoa = this._pessoaAdapter.adapt(pessoaModel)!;
+        const pessoa = this._pessoaAdapter.map(pessoaModel)!;
         this._userInfo.init(pessoa, accessToken);
         return pessoa;
       }

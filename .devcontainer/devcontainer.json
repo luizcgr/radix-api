@@ -26,7 +26,8 @@
         "vscode-icons-team.vscode-icons",
         "GitHub.vscode-pull-request-github",
         "GitHub.copilot-chat",
-        "esbenp.prettier-vscode"
+        "esbenp.prettier-vscode",
+        "Orta.vscode-jest"
       ]
     }
   }

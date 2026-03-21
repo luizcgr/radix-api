@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { DevolucaoCelula } from 'src/modules/devolucao/types/devolucao-celula';
 import { DevolucaoModel } from '../models/devolucao.model';
-import { ModelAdapter } from './model.adapter';
+import { ModelMapper } from './model.mapper';
 
 @Injectable()
-export class DevolucaoCelulaAdapter extends ModelAdapter<
+export class DevolucaoCelulaMapper extends ModelMapper<
   DevolucaoModel,
   DevolucaoCelula
 > {
@@ -12,7 +12,7 @@ export class DevolucaoCelulaAdapter extends ModelAdapter<
     super();
   }
 
-  adapt(model: DevolucaoModel): DevolucaoCelula | null {
+  map(model: DevolucaoModel): DevolucaoCelula | null {
     if (!model) {
       return null;
     }

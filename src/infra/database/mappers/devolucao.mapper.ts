@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { Devolucao } from 'src/modules/devolucao/types/devolucao';
 import { DevolucaoModel } from '../models/devolucao.model';
-import { ModelAdapter } from './model.adapter';
-import { PessoaAdapter } from './pessoa.adapter';
+import { ModelMapper } from './model.mapper';
+import { PessoaMapper } from './pessoa.mapper';
 
 @Injectable()
-export class DevolucaoAdapter extends ModelAdapter<DevolucaoModel, Devolucao> {
-  constructor(private readonly _pessoaAdapter: PessoaAdapter) {
+export class DevolucaoMapper extends ModelMapper<DevolucaoModel, Devolucao> {
+  constructor(private readonly _pessoaMapper: PessoaMapper) {
     super();
   }
 
-  adapt(model: DevolucaoModel): Devolucao | null {
+  map(model: DevolucaoModel): Devolucao | null {
     if (!model) {
       return null;
     }
@@ -27,8 +27,8 @@ export class DevolucaoAdapter extends ModelAdapter<DevolucaoModel, Devolucao> {
       codigoCliente: model.codigoCliente,
       valorDizimo: model.valorDizimo,
       valorFundoComunhao: model.valorFundoComunhao,
-      pessoa: this._pessoaAdapter.adapt(model.pessoa)!,
-      solicitante: this._pessoaAdapter.adapt(model.solicitante)!,
+      pessoa: this._pessoaMapper.map(model.pessoa)!,
+      solicitante: this._pessoaMapper.map(model.solicitante)!,
     };
   }
 }

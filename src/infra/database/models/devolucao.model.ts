@@ -34,7 +34,11 @@ export class DevolucaoModel extends Model<DevolucaoModel> {
   declare pessoaId: number;
   @Column({ field: 'solicitante_id', allowNull: false })
   declare solicitanteId: number;
-  @Column({ field: 'status', allowNull: false })
+  @Column({
+    field: 'status',
+    allowNull: false,
+    type: DataType.STRING(20),
+  })
   declare status: StatusDevolucao;
   @Column({ field: 'data_pagamento', allowNull: true })
   declare dataPagamento?: Date;

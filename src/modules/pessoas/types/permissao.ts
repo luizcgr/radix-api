@@ -3,4 +3,5 @@ export type Permissao = {
   missao: boolean;
   setor: boolean;
   celula: boolean;
+  admin: boolean;
 };

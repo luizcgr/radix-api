@@ -8,6 +8,7 @@ import { LoginEmailSenhaController } from './login/login-email-senha.controller'
 import { MeuSetorController } from './meu-setor/meu-setor.controller';
 import { MinhaCelulaController } from './minha-celula/minha-celula.controller';
 import { MinhaMissaoController } from './minha-missao/minha-missao.controller';
+import { PessoaController } from './pessoa/pessoa.controller';
 import { RefreshTokenController } from './refresh-token/refresh-token.controller';
 import { WebhookController } from './webhook/webhook.controller';
 
@@ -21,6 +22,7 @@ import { WebhookController } from './webhook/webhook.controller';
     MinhaCelulaController,
     MeuSetorController,
     MinhaMissaoController,
+    PessoaController,
   ],
 })
 export class ControllersModule {}

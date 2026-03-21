@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { defer, forkJoin, map, Observable } from 'rxjs';
-import { PessoasService } from 'src/modules/pessoas/services/pessoas.service';
+import { ConsultaPessoasService } from 'src/modules/pessoas/services/consulta-pessoas.service';
 import { ConsultaDevolucao } from '../types/consulta-devolucao';
 import { RelatorioDevolucao } from '../types/relatorio-devolucao';
 import { ConsultaDevolucoesService } from './consulta-devolucoes.service';
@@ -9,7 +9,7 @@ import { ConsultaDevolucoesService } from './consulta-devolucoes.service';
 export class RelatorioDevolucaoService {
   constructor(
     private readonly _consultaDevolucoesService: ConsultaDevolucoesService,
-    private readonly _pessoasService: PessoasService,
+    private readonly _pessoasService: ConsultaPessoasService,
   ) {}
 
   gerar(consulta: ConsultaDevolucao): Observable<RelatorioDevolucao> {

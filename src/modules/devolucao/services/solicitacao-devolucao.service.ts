@@ -10,11 +10,11 @@ import {
 } from 'rxjs';
 import { DEVOLUCAO_REPOSITORY } from 'src/constants';
 import { UserInfo } from 'src/infra/auth/user-info/user-info';
-import { DevolucaoAdapter } from 'src/infra/database/adapters/devolucao.adapter';
+import { DevolucaoMapper } from 'src/infra/database/mappers/devolucao.mapper';
 import { DevolucaoModel } from 'src/infra/database/models/devolucao.model';
 import { PessoaModel } from 'src/infra/database/models/pessoa.model';
 import { CobrancaService } from 'src/modules/cobranca/services/cobranca.service';
-import { PessoasService } from 'src/modules/pessoas/services/pessoas.service';
+import { ConsultaPessoasService } from 'src/modules/pessoas/services/consulta-pessoas.service';
 import { Pessoa } from 'src/modules/pessoas/types/pessoa';
 import { CustomError } from 'src/utils/custom-error';
 import { Devolucao } from '../types/devolucao';
@@ -27,11 +27,11 @@ export class SolicitacaoDevolucaoService {
   private readonly _logger = new Logger(SolicitacaoDevolucaoService.name);
 
   constructor(
-    private readonly _pessoaService: PessoasService,
+    private readonly _pessoaService: ConsultaPessoasService,
     private readonly _cobrancaService: CobrancaService,
     @Inject(DEVOLUCAO_REPOSITORY)
     private readonly _devolucaoRepository: typeof DevolucaoModel,
-    private readonly _devolucaoAdapter: DevolucaoAdapter,
+    private readonly _devolucaoAdapter: DevolucaoMapper,
     private readonly _userInfo: UserInfo,
   ) {}
 
