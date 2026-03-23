@@ -29,11 +29,11 @@ export class CadastroPessoaMeuSetorService {
       .pipe(
         this._verificarCelula(),
         this._verificarPermissao(),
-        this._salvarCelula(cadastro),
+        this._salvarPessoa(cadastro),
       );
   }
 
-  private _salvarCelula(
+  private _salvarPessoa(
     cadastro: CadastroPessoaMeuSetor,
   ): OperatorFunction<Celula, Pessoa> {
     return concatMap(() =>

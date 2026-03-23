@@ -1,4 +1,9 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  Logger,
+} from '@nestjs/common';
 import { defer, Observable } from 'rxjs';
 import { Op, WhereOptions } from 'sequelize';
 import { PESSOA_REPOSITORY } from 'src/constants';
@@ -25,6 +30,7 @@ export class ConsultaPessoasService {
 
   @TransactionObserver()
   consultar(consulta: ConsultaPessoas): Observable<Pessoa[]> {
+    this._testarParametrosDeConsulta(consulta);
     return defer(async () => {
       const where: WhereOptions<PessoaModel> = removeIfEmpty({
         cpf: consulta.cpf,
@@ -63,6 +69,17 @@ export class ConsultaPessoasService {
       catchSequelizeError('Erro ao consultar pessoas', this._logger),
       this._pessoaAdapter.mapEntityList(),
     );
+  }
+
+  private _testarParametrosDeConsulta(consulta: ConsultaPessoas) {
+    const paramsCount = Object.keys(
+      removeIfEmpty({ ...consulta }, true, true),
+    ).length;
+    if (paramsCount === 0) {
+      throw new BadRequestException(
+        'É necessário informar ao menos um parâmetro de consulta',
+      );
+    }
   }
 
   consultarPeloId(pessoaId: number): Observable<Pessoa | null> {

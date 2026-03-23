@@ -1,4 +1,14 @@
-import { Controller, Get, Param, ParseIntPipe, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  ParseIntPipe,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { map } from 'rxjs';
 import { Roles } from 'src/infra/auth/decorators/roles.decorator';
 import { UserInfo } from 'src/infra/auth/user-info/user-info';
@@ -6,7 +16,9 @@ import { ConsultaCelulasService } from 'src/modules/celulas/services/consulta-ce
 import { RelatorioCelulaService } from 'src/modules/devolucao/services/relatorio-celula.service';
 import { RelatorioDevolucaoService } from 'src/modules/devolucao/services/relatorio-devolucao.service';
 import { RelatorioSetorService } from 'src/modules/devolucao/services/relatorio-setor.service';
+import { CadastroPessoaMeuSetorService } from 'src/modules/pessoas/services/cadastro-pessoa-meu-setor.service';
 import { ConsultaPessoasService } from 'src/modules/pessoas/services/consulta-pessoas.service';
+import type { CadastroPessoaMeuSetor } from 'src/modules/pessoas/types/cadastro-pessoa-meu-setor';
 import { ConsultaPessoasMeuSetorDto } from './consulta-pessoas-meu-setor.dto';
 
 @Controller({ path: 'v1/meu-setor' })
@@ -18,6 +30,7 @@ export class MeuSetorController {
     private readonly _relatorioSetorService: RelatorioSetorService,
     private readonly _relatorioDevolucaoService: RelatorioDevolucaoService,
     private readonly _consultaPessoasService: ConsultaPessoasService,
+    private readonly _cadastroPessoaMeuSetorService: CadastroPessoaMeuSetorService,
   ) {}
 
   @Roles('setor')
@@ -82,6 +95,47 @@ export class MeuSetorController {
       ...query,
       setorId: this._userInfo.pessoa!.celula.setor.id,
       missaoId: this._userInfo.pessoa!.celula.setor.missao.id,
+    });
+  }
+
+  @Roles('setor')
+  @Get('pessoas/:pessoaId')
+  consultarPessoaById(@Param('pessoaId', ParseIntPipe) pessoaId: number) {
+    return this._consultaPessoasService
+      .consultar({
+        id: pessoaId,
+        setorId: this._userInfo.pessoa!.celula.setor.id,
+      })
+      .subscribe({
+        next: (pessoas) => {
+          if (pessoas.length === 0) {
+            throw new NotFoundException('Pessoa não encontrada');
+          }
+          return pessoas[0];
+        },
+        error: (err) => {
+          throw err;
+        },
+      });
+  }
+
+  @Roles('setor')
+  @Post('pessoas')
+  inserirPessoa(@Body() dto: CadastroPessoaMeuSetor) {
+    return this._cadastroPessoaMeuSetorService.salvar({
+      ...dto,
+    });
+  }
+
+  @Roles('setor')
+  @Put('pessoas/:pessoaId')
+  alterarPessoa(
+    @Param('pessoaId', ParseIntPipe) pessoaId: number,
+    @Body() dto: CadastroPessoaMeuSetor,
+  ) {
+    return this._cadastroPessoaMeuSetorService.salvar({
+      ...dto,
+      id: pessoaId,
     });
   }
 }
