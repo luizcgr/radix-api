@@ -1,9 +1,6 @@
-export type CadastroPessoa = {
-  id?: number;
-  nome: string;
-  cpf: string;
-  email: string;
-  celulaId: number;
+import { DadosBasicosPessoa } from './dados-basicos-pessoa';
+
+export type CadastroPessoa = DadosBasicosPessoa & {
   permissoes: {
     missao: boolean;
     setor: boolean;

@@ -1,10 +1,19 @@
 import { Module } from '@nestjs/common';
-import { ConsultaPessoasService } from './services/consulta-pessoas.service';
+import { CadastroPessoaMeuSetorService } from './services/cadastro-pessoa-meu-setor.service';
 import { CadastroPessoasService } from './services/cadastro-pessoas.service';
+import { ConsultaPessoasService } from './services/consulta-pessoas.service';
 
 @Module({
   imports: [],
-  providers: [ConsultaPessoasService, CadastroPessoasService],
-  exports: [ConsultaPessoasService, CadastroPessoasService],
+  providers: [
+    ConsultaPessoasService,
+    CadastroPessoasService,
+    CadastroPessoaMeuSetorService,
+  ],
+  exports: [
+    ConsultaPessoasService,
+    CadastroPessoasService,
+    CadastroPessoaMeuSetorService,
+  ],
 })
 export class PessoasModule {}
