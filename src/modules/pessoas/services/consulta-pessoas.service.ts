@@ -10,13 +10,14 @@ import { PESSOA_REPOSITORY } from 'src/constants';
 import { PessoaMapper } from 'src/infra/database/mappers/pessoa.mapper';
 import { CelulaModel } from 'src/infra/database/models/celula.model';
 import { MissaoModel } from 'src/infra/database/models/missao.model';
+import { PermissaoModel } from 'src/infra/database/models/permissao.model';
 import { PessoaModel } from 'src/infra/database/models/pessoa.model';
 import { SetorModel } from 'src/infra/database/models/setor.model';
 import { TransactionObserver } from 'src/infra/database/transactions/transaction-observer';
+import { removeIfEmpty } from 'src/utils/common-utils';
 import { catchSequelizeError } from 'src/utils/custom-error';
 import type { ConsultaPessoas } from '../types/consulta-pessoas';
 import { Pessoa } from '../types/pessoa';
-import { removeIfEmpty } from 'src/utils/common-utils';
 
 @Injectable()
 export class ConsultaPessoasService {
@@ -32,7 +33,10 @@ export class ConsultaPessoasService {
   consultar(consulta: ConsultaPessoas): Observable<Pessoa[]> {
     this._testarParametrosDeConsulta(consulta);
     return defer(async () => {
+      const setorWhere = removeIfEmpty({ id: consulta.setorId });
+      const missaoWhere = removeIfEmpty({ id: consulta.missaoId });
       const where: WhereOptions<PessoaModel> = removeIfEmpty({
+        id: consulta.id,
         cpf: consulta.cpf,
         nome:
           consulta.nome && consulta.nome.trim().length > 0
@@ -51,16 +55,24 @@ export class ConsultaPessoasService {
               {
                 as: 'setor',
                 model: SetorModel,
-                where: { id: consulta.setorId },
+                ...(Object.keys(setorWhere).length > 0
+                  ? { where: setorWhere }
+                  : {}),
                 include: [
                   {
                     as: 'missao',
                     model: MissaoModel,
-                    where: { id: consulta.missaoId },
+                    ...(Object.keys(missaoWhere).length > 0
+                      ? { where: missaoWhere }
+                      : {}),
                   },
                 ],
               },
             ],
+          },
+          {
+            as: 'permissao',
+            model: PermissaoModel,
           },
         ],
       });

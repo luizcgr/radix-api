@@ -2,13 +2,14 @@ import {
   Body,
   Controller,
   Get,
-  NotFoundException,
   Param,
   ParseIntPipe,
   Post,
   Put,
   Query,
+  Res,
 } from '@nestjs/common';
+import type { Response } from 'express';
 import { map } from 'rxjs';
 import { Roles } from 'src/infra/auth/decorators/roles.decorator';
 import { UserInfo } from 'src/infra/auth/user-info/user-info';
@@ -100,7 +101,10 @@ export class MeuSetorController {
 
   @Roles('setor')
   @Get('pessoas/:pessoaId')
-  consultarPessoaById(@Param('pessoaId', ParseIntPipe) pessoaId: number) {
+  consultarPessoaById(
+    @Param('pessoaId', ParseIntPipe) pessoaId: number,
+    @Res() res: Response,
+  ) {
     return this._consultaPessoasService
       .consultar({
         id: pessoaId,
@@ -109,12 +113,16 @@ export class MeuSetorController {
       .subscribe({
         next: (pessoas) => {
           if (pessoas.length === 0) {
-            throw new NotFoundException('Pessoa não encontrada');
+            res.status(404).json({ message: 'Pessoa não encontrada' });
+            return;
           }
-          return pessoas[0];
+          res.json(pessoas[0]);
         },
-        error: (err) => {
-          throw err;
+        error: (err: Error) => {
+          res.status(500).json({
+            message: 'Erro ao consultar pessoa',
+            error: err.message || err,
+          });
         },
       });
   }
