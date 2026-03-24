@@ -1,4 +1,4 @@
-export type DadosBasicosPessoa = {
+export type DadosBasicosCadastroPessoa = {
   id?: number;
   nome: string;
   cpf: string;

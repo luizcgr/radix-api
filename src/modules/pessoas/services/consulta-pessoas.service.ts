@@ -109,6 +109,10 @@ export class ConsultaPessoasService {
               },
             ],
           },
+          {
+            as: 'permissao',
+            model: PermissaoModel,
+          },
         ],
       }),
     ).pipe(this._pessoaAdapter.mapEntity());

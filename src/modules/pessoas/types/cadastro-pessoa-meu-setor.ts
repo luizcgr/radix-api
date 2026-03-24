@@ -1,6 +1,6 @@
-import { DadosBasicosPessoa } from './dados-basicos-pessoa';
+import { DadosBasicosCadastroPessoa } from './dados-basicos-cadastro-pessoa';
 
-export type CadastroPessoaMeuSetor = DadosBasicosPessoa & {
+export type CadastroPessoaMeuSetor = DadosBasicosCadastroPessoa & {
   id?: number;
   permissoes: {
     celula: boolean;
