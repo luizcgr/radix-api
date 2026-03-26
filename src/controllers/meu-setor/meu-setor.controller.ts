@@ -22,7 +22,6 @@ import { CadastroPessoaMeuSetorService } from 'src/modules/pessoas/services/cada
 import { ConsultaPessoasService } from 'src/modules/pessoas/services/consulta-pessoas.service';
 import { CadastroPessoaMeuSetorDto } from './cadastro-pessoa-meu-setor.dto';
 import { ConsultaPessoasMeuSetorDto } from './consulta-pessoas-meu-setor.dto';
-import { CustomError } from 'src/utils/custom-error';
 
 @Controller({ path: 'v1/meu-setor' })
 export class MeuSetorController {
