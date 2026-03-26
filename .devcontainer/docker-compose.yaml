@@ -20,7 +20,6 @@ services:
       - '-c'
       - 'shared_preload_libraries=pg_stat_statements'
     restart: 'no'
-    # network_mode: 'host'
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=senha123
@@ -38,6 +37,17 @@ services:
       - 4222:4222
       - 8222:8222
 
+  nui:
+    image: ghcr.io/nats-nui/nui
+    container_name: radix-nui
+    restart: 'no'
+    depends_on:
+      - nats
+    volumes:
+      - radix-nui-data:/db
+    ports:
+      - 31311:31311
+
   redis:
     image: redis:8.4.0-alpine
     container_name: radix-redis
@@ -47,4 +57,8 @@ services:
 
 volumes:
   radix-postgres-data:
+    driver: local
+  radix-nats-data:
+    driver: local
+  radix-nui-data:
     driver: local

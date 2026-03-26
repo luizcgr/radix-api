@@ -30,12 +30,17 @@ interface EmailConfig {
   port: number;
 }
 
+type NatsConfig = {
+  url: string;
+};
+
 @Injectable()
 export class Environment {
   readonly database: DatabaseConfig;
   readonly jwt: JwtConfig;
   readonly asaas: AsaasConfig;
   readonly email: EmailConfig;
+  readonly nats: NatsConfig;
 
   constructor(configService: ConfigService) {
     this.database = {
@@ -62,6 +67,9 @@ export class Environment {
       from: configService.get('EMAIL_FROM')!,
       host: configService.get('EMAIL_HOST')!,
       port: +configService.get('EMAIL_PORT')!,
+    };
+    this.nats = {
+      url: configService.get('NATS_URL')!,
     };
   }
 }

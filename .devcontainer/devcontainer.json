@@ -27,7 +27,8 @@
         "GitHub.vscode-pull-request-github",
         "GitHub.copilot-chat",
         "esbenp.prettier-vscode",
-        "Orta.vscode-jest"
+        "Orta.vscode-jest",
+        "cweijan.vscode-postgresql-client2"
       ]
     }
   }

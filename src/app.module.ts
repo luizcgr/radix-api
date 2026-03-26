@@ -6,9 +6,16 @@ import { AuthModule } from './infra/auth/auth.module';
 import { DatabaseModule } from './infra/database/database.module';
 import { EnvironmentModule } from './infra/environment/environment.module';
 import { Environment } from './infra/environment/environment.service';
+import { MensageriaModule } from './infra/mensageria/mensageria.module';
 
 @Module({
-  imports: [EnvironmentModule, DatabaseModule, AuthModule, ControllersModule],
+  imports: [
+    EnvironmentModule,
+    DatabaseModule,
+    AuthModule,
+    ControllersModule,
+    MensageriaModule,
+  ],
   controllers: [AppController],
   providers: [AppService, Environment],
   exports: [Environment],

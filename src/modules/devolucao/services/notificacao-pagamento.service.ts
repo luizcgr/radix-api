@@ -1,4 +1,5 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
+import { ClientNats } from '@nestjs/microservices';
 import {
   catchError,
   concatMap,
@@ -10,16 +11,19 @@ import {
   OperatorFunction,
   throwError,
 } from 'rxjs';
-import { DEVOLUCAO_REPOSITORY } from 'src/constants';
+import {
+  CLIENT_NATS,
+  DEVOLUCAO_REPOSITORY,
+  EVENTO_DEVOLUCAO_REALIZADA,
+} from 'src/constants';
 import { CelulaModel } from 'src/infra/database/models/celula.model';
 import { DevolucaoModel } from 'src/infra/database/models/devolucao.model';
 import { MissaoModel } from 'src/infra/database/models/missao.model';
 import { PessoaModel } from 'src/infra/database/models/pessoa.model';
 import { SetorModel } from 'src/infra/database/models/setor.model';
 import { TransactionObserver } from 'src/infra/database/transactions/transaction-observer';
-import { Email } from 'src/infra/email/email';
-import { EmailService } from 'src/infra/email/email.service';
 import { CustomError } from 'src/utils/custom-error';
+import { EventoDevolucaoRealizada } from '../events/devolucao-realizada.event';
 
 @Injectable()
 export class NotificacaoPagamentoService {
@@ -28,7 +32,7 @@ export class NotificacaoPagamentoService {
   constructor(
     @Inject(DEVOLUCAO_REPOSITORY)
     private readonly _devolucaoRepository: typeof DevolucaoModel,
-    private readonly _emailService: EmailService,
+    @Inject(CLIENT_NATS) private readonly _clientNats: ClientNats,
   ) {}
 
   @TransactionObserver()
@@ -43,20 +47,20 @@ export class NotificacaoPagamentoService {
 
   private _enviarEmailConfirmacao(): OperatorFunction<
     DevolucaoModel,
-    Email | Observable<never>
+    DevolucaoModel
   > {
     return concatMap((devolucao) => {
       const email = devolucao.pessoa.email;
-      return this._emailService.enviar({
-        assunto: 'Pagamento recebido',
-        texto: this._montarMensagem(devolucao),
-        endereco: email,
-      });
+      const evento: EventoDevolucaoRealizada = {
+        email,
+        mes: devolucao.mesReferencia,
+        ano: devolucao.anoReferencia,
+        nome: devolucao.pessoa.nome,
+        setor: devolucao.pessoa.celula.setor.nome,
+      };
+      this._clientNats.emit(EVENTO_DEVOLUCAO_REALIZADA, evento);
+      return of(devolucao);
     });
-  }
-
-  private _montarMensagem(devolucao: DevolucaoModel): string {
-    return `Recebemos o valor da sua contribuição. Que Deus retribua a sua generosidade.<p>Atenciosamente,<br>Economato ${devolucao.pessoa.celula.setor.nome}</p>`;
   }
 
   private _registrarPagamento(
