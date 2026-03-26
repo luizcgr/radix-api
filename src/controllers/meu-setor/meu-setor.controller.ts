@@ -19,7 +19,7 @@ import { RelatorioDevolucaoService } from 'src/modules/devolucao/services/relato
 import { RelatorioSetorService } from 'src/modules/devolucao/services/relatorio-setor.service';
 import { CadastroPessoaMeuSetorService } from 'src/modules/pessoas/services/cadastro-pessoa-meu-setor.service';
 import { ConsultaPessoasService } from 'src/modules/pessoas/services/consulta-pessoas.service';
-import type { CadastroPessoaMeuSetor } from 'src/modules/pessoas/types/cadastro-pessoa-meu-setor';
+import { CadastroPessoaMeuSetorDto } from './cadastro-pessoa-meu-setor.dto';
 import { ConsultaPessoasMeuSetorDto } from './consulta-pessoas-meu-setor.dto';
 
 @Controller({ path: 'v1/meu-setor' })
@@ -129,7 +129,7 @@ export class MeuSetorController {
 
   @Roles('setor')
   @Post('pessoas')
-  inserirPessoa(@Body() dto: CadastroPessoaMeuSetor) {
+  inserirPessoa(@Body() dto: CadastroPessoaMeuSetorDto) {
     return this._cadastroPessoaMeuSetorService.salvar({
       ...dto,
     });
@@ -139,7 +139,7 @@ export class MeuSetorController {
   @Put('pessoas/:pessoaId')
   alterarPessoa(
     @Param('pessoaId', ParseIntPipe) pessoaId: number,
-    @Body() dto: CadastroPessoaMeuSetor,
+    @Body() dto: CadastroPessoaMeuSetorDto,
   ) {
     return this._cadastroPessoaMeuSetorService.salvar({
       ...dto,

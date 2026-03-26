@@ -10,6 +10,7 @@ import {
 import { CelulaModel } from './models/celula.model';
 import { DevolucaoModel } from './models/devolucao.model';
 import { MissaoModel } from './models/missao.model';
+import { PermissaoModel } from './models/permissao.model';
 import { PessoaModel } from './models/pessoa.model';
 import { SetorModel } from './models/setor.model';
 
@@ -36,6 +37,6 @@ export const modelsProvider: ValueProvider[] = [
   },
   {
     provide: PERMISSAO_REPOSITORY,
-    useValue: PessoaModel,
+    useValue: PermissaoModel,
   },
 ];

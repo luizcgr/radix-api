@@ -2,6 +2,7 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import {
   concatMap,
   defer,
+  from,
   iif,
   Observable,
   of,
@@ -9,6 +10,7 @@ import {
   throwError,
 } from 'rxjs';
 import { Op } from 'sequelize';
+import { HashSenha } from 'src/infra/auth/classes/hash-senha';
 import { PERMISSAO_REPOSITORY, PESSOA_REPOSITORY } from '../../../constants';
 import { PessoaMapper } from '../../../infra/database/mappers/pessoa.mapper';
 import { PermissaoModel } from '../../../infra/database/models/permissao.model';
@@ -59,8 +61,18 @@ export class CadastroPessoasService {
   private _inserirNovaPessoa(
     cadastro: CadastroPessoa,
   ): OperatorFunction<PessoaModel, PessoaModel> {
-    return concatMap(async (pessoaModel) => {
+    return concatMap((pessoaModel) =>
+      from(this._inserirNovaPessoaAsync(pessoaModel, cadastro)),
+    );
+  }
+
+  private async _inserirNovaPessoaAsync(
+    pessoaModel: PessoaModel,
+    cadastro: CadastroPessoa,
+  ): Promise<PessoaModel> {
+    try {
       this._copiarAtributosPessoa(pessoaModel, cadastro);
+      pessoaModel.senha = new HashSenha('senha123').value;
       await pessoaModel.save();
 
       const permissaoModel = this._permissaoRepository.build();
@@ -69,7 +81,10 @@ export class CadastroPessoasService {
 
       const pessoaSalva = await this._carregarPessoaSalva(pessoaModel);
       return pessoaSalva!;
-    });
+    } catch (error) {
+      this._logger.error('Erro ao inserir nova pessoa', error);
+      throw new Error('Erro ao inserir nova pessoa');
+    }
   }
 
   private async _carregarPessoaSalva(pessoaModel: PessoaModel) {
@@ -91,11 +106,11 @@ export class CadastroPessoasService {
     cadastro: CadastroPessoa,
     pessoaModel: PessoaModel,
   ) {
+    permissaoModel.pessoaId = +pessoaModel.id;
     permissaoModel.missao = cadastro.permissoes.missao;
     permissaoModel.setor = cadastro.permissoes.setor;
     permissaoModel.celula = cadastro.permissoes.celula;
     permissaoModel.admin = cadastro.permissoes.admin;
-    permissaoModel.pessoaId = pessoaModel.id;
   }
 
   private _copiarAtributosPessoa(

@@ -44,7 +44,7 @@ export const TransactionObserver = (
         return from(Promise.resolve(originalMethod.apply(this, args)));
       }
 
-      const result = new Promise((resolve, reject) => {
+      const result = new Promise((resolve) => {
         getSequelizeDatasource()
           .transaction(async () => {
             try {
@@ -56,11 +56,11 @@ export const TransactionObserver = (
               resolve(originalResult);
             } catch (err) {
               logger.debug(err);
-              reject(err instanceof Error ? err : new Error(String(err)));
+              throw err;
             }
           })
           .catch((err) => {
-            reject(err instanceof Error ? err : new Error(String(err)));
+            throw err;
           });
       });
 

@@ -1,21 +1,21 @@
-import { IsEmail, IsNotEmpty, IsNumber } from 'class-validator';
-import { PermissaoDto } from './permissao.dto';
 import { Type } from 'class-transformer';
+import { IsEmail, IsNotEmpty, ValidateNested } from 'class-validator';
+import { PermissaoPessoaMeuSetorDto } from './permissao-pessoa-meu-setor.dto';
 import { IsCpf } from '../../utils/validators/cpf.validator';
 
-export class CadastroPessoaDto {
+export class CadastroPessoaMeuSetorDto {
   @IsNotEmpty({ message: 'O nome é obrigatório' })
   nome: string;
   @IsNotEmpty({ message: 'O CPF é obrigatório' })
   @IsCpf({ message: 'O CPF deve conter 11 dígitos numéricos e ser válido' })
   cpf: string;
   @IsNotEmpty({ message: 'O email é obrigatório' })
-  @IsEmail()
+  @IsEmail({}, { message: 'O email informado não é válido' })
   email: string;
   @IsNotEmpty({ message: 'O ID da célula é obrigatório' })
-  @IsNumber({}, { message: 'O ID da célula deve ser um número' })
   celulaId: number;
   @IsNotEmpty({ message: 'As permissões são obrigatórias' })
-  @Type(() => PermissaoDto)
-  permissoes: PermissaoDto;
+  @ValidateNested()
+  @Type(() => PermissaoPessoaMeuSetorDto)
+  permissoes: PermissaoPessoaMeuSetorDto;
 }
