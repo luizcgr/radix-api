@@ -11,8 +11,14 @@ import {
   throwError,
 } from 'rxjs';
 import { DEVOLUCAO_REPOSITORY } from 'src/constants';
+import { CelulaModel } from 'src/infra/database/models/celula.model';
 import { DevolucaoModel } from 'src/infra/database/models/devolucao.model';
+import { MissaoModel } from 'src/infra/database/models/missao.model';
+import { PessoaModel } from 'src/infra/database/models/pessoa.model';
+import { SetorModel } from 'src/infra/database/models/setor.model';
 import { TransactionObserver } from 'src/infra/database/transactions/transaction-observer';
+import { Email } from 'src/infra/email/email';
+import { EmailService } from 'src/infra/email/email.service';
 import { CustomError } from 'src/utils/custom-error';
 
 @Injectable()
@@ -22,6 +28,7 @@ export class NotificacaoPagamentoService {
   constructor(
     @Inject(DEVOLUCAO_REPOSITORY)
     private readonly _devolucaoRepository: typeof DevolucaoModel,
+    private readonly _emailService: EmailService,
   ) {}
 
   @TransactionObserver()
@@ -29,17 +36,37 @@ export class NotificacaoPagamentoService {
     return this._consultarDevolucaoPeloPagamentoId(pagamentoId).pipe(
       this._validarPagamento(),
       this._registrarPagamento(pagamentoId),
+      this._enviarEmailConfirmacao(),
+      map(() => true),
     );
+  }
+
+  private _enviarEmailConfirmacao(): OperatorFunction<
+    DevolucaoModel,
+    Email | Observable<never>
+  > {
+    return concatMap((devolucao) => {
+      const email = devolucao.pessoa.email;
+      return this._emailService.enviar({
+        assunto: 'Pagamento recebido',
+        texto: this._montarMensagem(devolucao),
+        endereco: email,
+      });
+    });
+  }
+
+  private _montarMensagem(devolucao: DevolucaoModel): string {
+    return `Recebemos o valor da sua contribuição. Que Deus retribua a sua generosidade.<p>Atenciosamente,<br>Economato ${devolucao.pessoa.celula.setor.nome}</p>`;
   }
 
   private _registrarPagamento(
     pagamentoId: string,
-  ): OperatorFunction<DevolucaoModel, boolean> {
+  ): OperatorFunction<DevolucaoModel, DevolucaoModel> {
     return concatMap((devolucaoModel) => {
-      const processado$ = of(true);
+      const processado$ = of(devolucaoModel);
       const naoProcessado$ = this._atualizarDevolucaoPaga(pagamentoId).pipe(
         this._catchErroAoRegistrarPagamento(),
-        map(() => true),
+        map(() => devolucaoModel),
       );
       return iif(
         () => devolucaoModel.status === 'pago',
@@ -87,6 +114,25 @@ export class NotificacaoPagamentoService {
     return defer(() =>
       this._devolucaoRepository.findOne({
         where: { pagamentoId },
+        include: [
+          {
+            as: 'pessoa',
+            model: PessoaModel,
+            include: [
+              {
+                as: 'celula',
+                model: CelulaModel,
+                include: [
+                  {
+                    as: 'setor',
+                    model: SetorModel,
+                    include: [{ as: 'missao', model: MissaoModel }],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
       }),
     );
   }

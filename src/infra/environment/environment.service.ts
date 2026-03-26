@@ -22,11 +22,20 @@ type AsaasConfig = {
   webhookAccessToken: string;
 };
 
+interface EmailConfig {
+  from: string;
+  user: string;
+  password: string;
+  host: string;
+  port: number;
+}
+
 @Injectable()
 export class Environment {
   readonly database: DatabaseConfig;
   readonly jwt: JwtConfig;
   readonly asaas: AsaasConfig;
+  readonly email: EmailConfig;
 
   constructor(configService: ConfigService) {
     this.database = {
@@ -46,6 +55,13 @@ export class Environment {
       token: configService.get('ASAAS_API_TOKEN')!,
       url: configService.get('ASAAS_API_URL')!,
       webhookAccessToken: configService.get('ASAAS_WEBHOOK_ACCESS_TOKEN')!,
+    };
+    this.email = {
+      user: configService.get('EMAIL_USER')!,
+      password: configService.get('EMAIL_PASSWORD')!,
+      from: configService.get('EMAIL_FROM')!,
+      host: configService.get('EMAIL_HOST')!,
+      port: +configService.get('EMAIL_PORT')!,
     };
   }
 }

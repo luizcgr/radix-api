@@ -22,6 +22,8 @@ import { CadastroPessoaMeuSetorService } from 'src/modules/pessoas/services/cada
 import { ConsultaPessoasService } from 'src/modules/pessoas/services/consulta-pessoas.service';
 import { CadastroPessoaMeuSetorDto } from './cadastro-pessoa-meu-setor.dto';
 import { ConsultaPessoasMeuSetorDto } from './consulta-pessoas-meu-setor.dto';
+import { CadastroCelulaMeuSetorDto } from './cadastro-celula-meu-setor.dto';
+import { CadastroCelulaMeuSetorService } from 'src/modules/celulas/services/cadastro-celula-meu-setor.service';
 
 @Controller({ path: 'v1/meu-setor' })
 export class MeuSetorController {
@@ -33,6 +35,7 @@ export class MeuSetorController {
     private readonly _relatorioDevolucaoService: RelatorioDevolucaoService,
     private readonly _consultaPessoasService: ConsultaPessoasService,
     private readonly _cadastroPessoaMeuSetorService: CadastroPessoaMeuSetorService,
+    private readonly _cadastroCelulaMeuSetorService: CadastroCelulaMeuSetorService,
   ) {}
 
   @Roles('setor')
@@ -94,6 +97,26 @@ export class MeuSetorController {
         }
         res.json(celulas[0]);
       });
+  }
+
+  @Roles('setor')
+  @Post('celulas')
+  inserirCelula(@Body() dto: CadastroCelulaMeuSetorDto) {
+    return this._cadastroCelulaMeuSetorService.salvar({
+      ...dto,
+    });
+  }
+
+  @Roles('setor')
+  @Put('celulas/:celulaId')
+  alterarCelula(
+    @Param('celulaId', ParseIntPipe) celulaId: number,
+    @Body() dto: CadastroCelulaMeuSetorDto,
+  ) {
+    return this._cadastroCelulaMeuSetorService.salvar({
+      ...dto,
+      id: celulaId,
+    });
   }
 
   @Roles('setor')

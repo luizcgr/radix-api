@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { EmailModule } from 'src/infra/email/email.module';
 import { PagamentoModule } from '../cobranca/pagamento.module';
 import { PessoasModule } from '../pessoas/pessoas.module';
 import { ConsultaDevolucoesService } from './services/consulta-devolucoes.service';
@@ -11,7 +12,7 @@ import { RelatorioSetorService } from './services/relatorio-setor.service';
 import { SolicitacaoDevolucaoService } from './services/solicitacao-devolucao.service';
 
 @Module({
-  imports: [PessoasModule, PagamentoModule],
+  imports: [PessoasModule, PagamentoModule, EmailModule],
   providers: [
     SolicitacaoDevolucaoService,
     NotificacaoPagamentoService,
