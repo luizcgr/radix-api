@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  NotFoundException,
   Param,
   ParseIntPipe,
   Post,
@@ -21,6 +22,7 @@ import { CadastroPessoaMeuSetorService } from 'src/modules/pessoas/services/cada
 import { ConsultaPessoasService } from 'src/modules/pessoas/services/consulta-pessoas.service';
 import { CadastroPessoaMeuSetorDto } from './cadastro-pessoa-meu-setor.dto';
 import { ConsultaPessoasMeuSetorDto } from './consulta-pessoas-meu-setor.dto';
+import { CustomError } from 'src/utils/custom-error';
 
 @Controller({ path: 'v1/meu-setor' })
 export class MeuSetorController {
@@ -74,6 +76,25 @@ export class MeuSetorController {
       anoReferencia,
       setorId: this._userInfo.pessoa!.celula.setor.id,
     });
+  }
+
+  @Roles('setor')
+  @Get('celulas/:celulaId')
+  consultarCelulaById(
+    @Param('celulaId', ParseIntPipe) celulaId: number,
+    @Res() res: Response,
+  ) {
+    return this._consultaCelulasService
+      .consultar({
+        id: celulaId,
+        setorId: this._userInfo.pessoa!.celula.setor.id,
+      })
+      .subscribe((celulas) => {
+        if (celulas.length === 0) {
+          throw new NotFoundException('Célula não encontrada no setor');
+        }
+        res.json(celulas[0]);
+      });
   }
 
   @Roles('setor')
