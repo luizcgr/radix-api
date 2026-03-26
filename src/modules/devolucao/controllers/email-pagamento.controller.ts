@@ -1,7 +1,11 @@
-import { Controller, Logger } from '@nestjs/common';
+import { Controller, Inject, Logger } from '@nestjs/common';
 import { EventPattern } from '@nestjs/microservices';
-import { defer, Observable } from 'rxjs';
-import { EVENTO_DEVOLUCAO_REALIZADA } from 'src/constants';
+import { concatMap, defer, Observable, tap } from 'rxjs';
+import {
+  DEVOLUCAO_REPOSITORY,
+  EVENTO_DEVOLUCAO_REALIZADA,
+} from 'src/constants';
+import { DevolucaoModel } from 'src/infra/database/models/devolucao.model';
 import { EmailService } from 'src/infra/email/email.service';
 import type { EventoDevolucaoRealizada } from '../events/devolucao-realizada.event';
 
@@ -9,7 +13,11 @@ import type { EventoDevolucaoRealizada } from '../events/devolucao-realizada.eve
 export class EmailPagamentoController {
   private readonly _logger = new Logger(EmailPagamentoController.name);
 
-  constructor(private readonly _emailService: EmailService) {}
+  constructor(
+    private readonly _emailService: EmailService,
+    @Inject(DEVOLUCAO_REPOSITORY)
+    private readonly _devolucaoRepository: typeof DevolucaoModel,
+  ) {}
 
   @EventPattern(EVENTO_DEVOLUCAO_REALIZADA)
   handleDevolucaoRealizada(evento: EventoDevolucaoRealizada) {
@@ -39,7 +47,19 @@ export class EmailPagamentoController {
         texto: this._montarMensagem(evento),
         endereco: email,
       });
-    });
+    }).pipe(
+      concatMap(() =>
+        this._devolucaoRepository.update(
+          { dataEmailConfirmacao: new Date() },
+          { where: { id: evento.devolucaoId } },
+        ),
+      ),
+      tap(() =>
+        this._logger.debug(
+          `Data de envio do email de confirmação atualizada para o id ${evento.devolucaoId}.`,
+        ),
+      ),
+    );
   }
 
   private _montarMensagem(evento: EventoDevolucaoRealizada): string {

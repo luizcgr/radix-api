@@ -57,6 +57,7 @@ export class NotificacaoPagamentoService {
         ano: devolucao.anoReferencia,
         nome: devolucao.pessoa.nome,
         setor: devolucao.pessoa.celula.setor.nome,
+        devolucaoId: devolucao.id,
       };
       this._clientNats.emit(EVENTO_DEVOLUCAO_REALIZADA, evento);
       return of(devolucao);

@@ -51,6 +51,9 @@ export class DevolucaoModel extends Model<DevolucaoModel> {
   @Column({ field: 'codigo_cliente', allowNull: false })
   declare codigoCliente: string;
 
+  @Column({ field: 'data_email_confirmacao', allowNull: true })
+  declare dataEmailConfirmacao?: Date;
+
   @BelongsTo(() => PessoaModel, 'pessoa_id')
   declare pessoa: PessoaModel;
   @BelongsTo(() => PessoaModel, 'solicitante_id')

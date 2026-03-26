@@ -16,4 +16,5 @@ export type Devolucao = {
   urlPagamento: string;
   numeroPagamento: string;
   codigoCliente: string;
+  dataEmailConfirmacao?: Date;
 };

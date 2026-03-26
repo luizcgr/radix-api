@@ -29,6 +29,7 @@ export class DevolucaoMapper extends ModelMapper<DevolucaoModel, Devolucao> {
       valorFundoComunhao: model.valorFundoComunhao,
       pessoa: this._pessoaMapper.map(model.pessoa)!,
       solicitante: this._pessoaMapper.map(model.solicitante)!,
+      dataEmailConfirmacao: model.dataEmailConfirmacao,
     };
   }
 }

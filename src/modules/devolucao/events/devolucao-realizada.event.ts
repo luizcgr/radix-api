@@ -4,4 +4,5 @@ export type EventoDevolucaoRealizada = {
   ano: number;
   nome: string;
   setor: string;
+  devolucaoId: number;
 };
