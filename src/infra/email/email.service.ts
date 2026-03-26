@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
-import { concatMap, defer, map, Observable, of, tap } from 'rxjs';
+import { concatMap, defer, iif, map, Observable, of, tap } from 'rxjs';
 import { Environment } from '../environment/environment.service';
 import { Email } from './email';
 
@@ -28,8 +28,8 @@ export class EmailService {
       const verificar$ = defer(() => this._transporter.verify()).pipe(
         tap(() => (this._verified = true)),
       );
-      const jaVerificado$ = of();
-      return this._verified ? jaVerificado$ : verificar$;
+      const jaVerificado$ = of(email);
+      return iif(() => this._verified, jaVerificado$, verificar$);
     }).pipe(
       concatMap(() => {
         const attachments =
