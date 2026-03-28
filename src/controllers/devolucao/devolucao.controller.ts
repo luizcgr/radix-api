@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  Res,
+} from '@nestjs/common';
 import type { Response } from 'express';
 import { UserInfo } from 'src/infra/auth/user-info/user-info';
 import { ConsultaDevolucoesService } from 'src/modules/devolucao/services/consulta-devolucoes.service';
@@ -14,12 +22,15 @@ export class DevolucaoController {
     private readonly _userInfo: UserInfo,
   ) {}
 
-  @Get('pessoais')
-  consultarDevolucoesPessoais(@Res() res: Response) {
+  @Get('pessoais/:ano')
+  consultarDevolucoesPessoais(
+    @Param('ano', ParseIntPipe) ano: number,
+    @Res() res: Response,
+  ) {
     return this._consultaDevolucoesService
       .consultar({
         pessoaId: this._userInfo.pessoa!.id,
-        anoReferencia: new Date().getFullYear(),
+        anoReferencia: ano,
       })
       .subscribe({
         next: (devolucoes) => {

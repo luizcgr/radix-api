@@ -10,8 +10,10 @@ import { EmailService } from 'src/infra/email/email.service';
 import type { EventoDevolucaoRealizada } from '../events/devolucao-realizada.event';
 
 @Controller()
-export class EmailPagamentoController {
-  private readonly _logger = new Logger(EmailPagamentoController.name);
+export class EmailConfirmacaoPagamentoController {
+  private readonly _logger = new Logger(
+    EmailConfirmacaoPagamentoController.name,
+  );
 
   constructor(
     private readonly _emailService: EmailService,

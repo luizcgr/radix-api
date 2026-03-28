@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { EmailModule } from 'src/infra/email/email.module';
 import { PagamentoModule } from '../cobranca/pagamento.module';
 import { PessoasModule } from '../pessoas/pessoas.module';
+import { EmailConfirmacaoPagamentoController } from './controllers/email-confirmacao-pagamento.controller';
+import { EmailLinkPagamentoController } from './controllers/email-link-pagamento.controller';
 import { ConsultaDevolucoesService } from './services/consulta-devolucoes.service';
 import { NotificacaoPagamentoService } from './services/notificacao-pagamento.service';
 import { RelatorioCelulaService } from './services/relatorio-celula.service';
@@ -10,11 +12,13 @@ import { RelatorioEvolucaoService } from './services/relatorio-evolucao.service'
 import { RelatorioMissaoService } from './services/relatorio-missao.service';
 import { RelatorioSetorService } from './services/relatorio-setor.service';
 import { SolicitacaoDevolucaoService } from './services/solicitacao-devolucao.service';
-import { EmailPagamentoController } from './controllers/email-pagamento.controller';
 
 @Module({
   imports: [PessoasModule, PagamentoModule, EmailModule],
-  controllers: [EmailPagamentoController],
+  controllers: [
+    EmailConfirmacaoPagamentoController,
+    EmailLinkPagamentoController,
+  ],
   providers: [
     SolicitacaoDevolucaoService,
     NotificacaoPagamentoService,

@@ -1,4 +1,6 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
+import { ClientNats } from '@nestjs/microservices';
+import { Decimal } from 'decimal.js';
 import {
   catchError,
   concatMap,
@@ -8,7 +10,11 @@ import {
   OperatorFunction,
   throwError,
 } from 'rxjs';
-import { DEVOLUCAO_REPOSITORY } from 'src/constants';
+import {
+  CLIENT_NATS,
+  DEVOLUCAO_REPOSITORY,
+  EVENTO_ENVIO_LINK_PAGAMENTO,
+} from 'src/constants';
 import { UserInfo } from 'src/infra/auth/user-info/user-info';
 import { DevolucaoMapper } from 'src/infra/database/mappers/devolucao.mapper';
 import { DevolucaoModel } from 'src/infra/database/models/devolucao.model';
@@ -17,10 +23,13 @@ import { CobrancaService } from 'src/modules/cobranca/services/cobranca.service'
 import { ConsultaPessoasService } from 'src/modules/pessoas/services/consulta-pessoas.service';
 import { Pessoa } from 'src/modules/pessoas/types/pessoa';
 import { CustomError } from 'src/utils/custom-error';
+import { EventoEnvioLinkPagamento } from '../events/link-pagamento-gerado';
 import { Devolucao } from '../types/devolucao';
 import { SolicitacaoDevolucao } from '../types/solicitacao-devolucao';
 import { LinkPagamento } from '/workspaces/radix-api/src/modules/cobranca/types/link-pagamento';
-import { Decimal } from 'decimal.js';
+import { CelulaModel } from 'src/infra/database/models/celula.model';
+import { SetorModel } from 'src/infra/database/models/setor.model';
+import { MissaoModel } from 'src/infra/database/models/missao.model';
 
 @Injectable()
 export class SolicitacaoDevolucaoService {
@@ -33,6 +42,7 @@ export class SolicitacaoDevolucaoService {
     private readonly _devolucaoRepository: typeof DevolucaoModel,
     private readonly _devolucaoAdapter: DevolucaoMapper,
     private readonly _userInfo: UserInfo,
+    @Inject(CLIENT_NATS) private readonly _clientNats: ClientNats,
   ) {}
 
   gerar(solicitacao: SolicitacaoDevolucao): Observable<Devolucao> {
@@ -43,9 +53,30 @@ export class SolicitacaoDevolucaoService {
         this._gerarCobrancaParaPagamento(solicitacao),
         this._salvarRegistroDevolucao(solicitacao),
         this._recarregarDevolucaoSalva(),
+        this._solicitarEnvioComLinkDePagamento(),
         this._catchErroAoSalvarDevolucao(),
         this._devolucaoAdapter.mapEntityNotNull(),
       );
+  }
+  private _solicitarEnvioComLinkDePagamento(): OperatorFunction<
+    DevolucaoModel,
+    DevolucaoModel
+  > {
+    return concatMap((devolucaoModel) => {
+      const evento: EventoEnvioLinkPagamento = {
+        email: devolucaoModel.pessoa.email,
+        nome: devolucaoModel.pessoa.nome,
+        link: devolucaoModel.urlPagamento,
+        valorComunhaoBens: +devolucaoModel.valorDizimo,
+        valorFundoComunhao: +devolucaoModel.valorFundoComunhao,
+        formaPagamento: 'cartao_credito',
+        anoReferencia: +devolucaoModel.anoReferencia,
+        mesReferencia: +devolucaoModel.mesReferencia,
+        setor: devolucaoModel.pessoa.celula.setor.nome,
+      };
+      this._clientNats.emit(EVENTO_ENVIO_LINK_PAGAMENTO, evento);
+      return of(devolucaoModel);
+    });
   }
 
   private _catchErroAoSalvarDevolucao(): OperatorFunction<
@@ -72,7 +103,25 @@ export class SolicitacaoDevolucaoService {
         `Recarregando devolução salva com ID ${devolucaoModel.id} para o usuário ${this._userInfo.pessoa?.nome} da célula ${this._userInfo.pessoa?.celula?.nome}`,
       );
       return devolucaoModel.reload({
-        include: [{ as: 'pessoa', model: PessoaModel }],
+        include: [
+          {
+            as: 'pessoa',
+            model: PessoaModel,
+            include: [
+              {
+                as: 'celula',
+                model: CelulaModel,
+                include: [
+                  {
+                    as: 'setor',
+                    model: SetorModel,
+                    include: [{ as: 'missao', model: MissaoModel }],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
       });
     });
   }

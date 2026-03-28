@@ -8,3 +8,4 @@ export const PERMISSAO_REPOSITORY = 'PERMISSAO_REPOSITORY';
 export const CLIENT_NATS = 'CLIENT_NATS';
 
 export const EVENTO_DEVOLUCAO_REALIZADA = 'devolucao-realizada';
+export const EVENTO_ENVIO_LINK_PAGAMENTO = 'envio-link-pagamento';
