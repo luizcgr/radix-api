@@ -18,3 +18,16 @@ FROM pg_stat_statements
 ORDER BY mean_exec_time DESC
 LIMIT 10;
 ```
+
+# Backup do banco local
+
+```sh
+docker exec -e -it radix-postgres pg_dump -p 5432 -Fc --no-acl --no-owner -h localhost -U postgres -f /tmp/radix.dump radix
+docker cp radix-postgres:/tmp/radix.dump ~/radix.dump
+```
+
+# Restaurar o backup local
+
+```sh
+
+```
