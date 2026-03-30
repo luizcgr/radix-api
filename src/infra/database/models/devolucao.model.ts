@@ -7,6 +7,7 @@ import {
   PrimaryKey,
   Table,
 } from 'sequelize-typescript';
+import type { FormaPagamento } from 'src/modules/cobranca/types/forma-pagamento';
 import type { StatusDevolucao } from 'src/modules/devolucao/types/status-devolucao';
 import { PessoaModel } from './pessoa.model';
 
@@ -26,6 +27,8 @@ export class DevolucaoModel extends Model<DevolucaoModel> {
   declare valorDizimo: number;
   @Column({ field: 'valor_fundo_comunhao', allowNull: false })
   declare valorFundoComunhao: number;
+  @Column({ field: 'forma_pagamento', allowNull: false })
+  declare formaPagamento: FormaPagamento;
   @Column({
     field: 'pessoa_id',
     allowNull: false,

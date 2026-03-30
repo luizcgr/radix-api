@@ -3,6 +3,7 @@ import { EventPattern } from '@nestjs/microservices';
 import { EVENTO_ENVIO_LINK_PAGAMENTO } from 'src/constants';
 import { EmailService } from 'src/infra/email/email.service';
 import type { EventoEnvioLinkPagamento } from '../events/link-pagamento-gerado';
+import { FormaPagamento } from 'src/modules/cobranca/types/forma-pagamento';
 
 @Controller()
 export class EmailLinkPagamentoController {
@@ -41,7 +42,7 @@ export class EmailLinkPagamentoController {
           <ul>
             <li>Valor do dízimo: <strong>R$ ${evento.valorComunhaoBens.toFixed(2)}</strong></li>
             <li>Valor do fundo de comunhão: <strong>R$ ${evento.valorFundoComunhao.toFixed(2)}</strong></li>
-            <li>Forma de pagamento: <strong>${evento.formaPagamento}</strong></li>
+            <li>Forma de pagamento: <strong>${this._descreverFormaPagamento(evento.formaPagamento)}</strong></li>
           </ul>
           <p>Para realizar o pagamento, clique no link abaixo:</p>
           <p><a href="${evento.link}" style="background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Realizar Pagamento</a></p>
@@ -49,5 +50,16 @@ export class EmailLinkPagamentoController {
         </body>
       </html>
     `;
+  }
+
+  private _descreverFormaPagamento(formaPagamento: FormaPagamento): string {
+    switch (formaPagamento) {
+      case 'cartao_credito':
+        return 'Cartão de Crédito';
+      case 'pix':
+        return 'Pix';
+      default:
+        return 'Desconhecida';
+    }
   }
 }
