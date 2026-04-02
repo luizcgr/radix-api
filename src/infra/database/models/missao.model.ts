@@ -1,10 +1,12 @@
 import {
   AutoIncrement,
+  BelongsTo,
   Column,
   Model,
   PrimaryKey,
   Table,
 } from 'sequelize-typescript';
+import { RegionalModel } from './regional.model';
 
 @Table({ tableName: 'tb_missao', timestamps: false })
 export class MissaoModel extends Model<MissaoModel> {
@@ -16,4 +18,9 @@ export class MissaoModel extends Model<MissaoModel> {
   declare nome: string;
   @Column({ allowNull: false, defaultValue: true })
   declare ativo: boolean;
+  @Column({ field: 'regional_id', allowNull: false })
+  declare regionalId: number;
+
+  @BelongsTo(() => RegionalModel, 'regional_id')
+  declare regional: RegionalModel;
 }

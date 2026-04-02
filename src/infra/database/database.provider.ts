@@ -9,6 +9,7 @@ import { MissaoModel } from './models/missao.model';
 import { PermissaoModel } from './models/permissao.model';
 import { PessoaModel } from './models/pessoa.model';
 import { SetorModel } from './models/setor.model';
+import { RegionalModel } from './models/regional.model';
 
 const logger = new Logger('Sequelize');
 
@@ -43,6 +44,7 @@ export const databaseProviders = [
         PessoaModel,
         DevolucaoModel,
         PermissaoModel,
+        RegionalModel,
       ]);
       await sequelize.sync();
       sequelizeDatasource = sequelize;

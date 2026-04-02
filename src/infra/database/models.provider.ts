@@ -13,6 +13,7 @@ import { MissaoModel } from './models/missao.model';
 import { PermissaoModel } from './models/permissao.model';
 import { PessoaModel } from './models/pessoa.model';
 import { SetorModel } from './models/setor.model';
+import { RegionalModel } from './models/regional.model';
 
 export const modelsProvider: ValueProvider[] = [
   {
@@ -38,5 +39,9 @@ export const modelsProvider: ValueProvider[] = [
   {
     provide: PERMISSAO_REPOSITORY,
     useValue: PermissaoModel,
+  },
+  {
+    provide: 'REGIONAL_REPOSITORY',
+    useValue: () => RegionalModel,
   },
 ];
