@@ -27,6 +27,7 @@ export class DevolucaoMapper extends ModelMapper<DevolucaoModel, Devolucao> {
       codigoCliente: model.codigoCliente,
       valorDizimo: model.valorDizimo,
       valorFundoComunhao: model.valorFundoComunhao,
+      formaPagamento: model.formaPagamento,
       pessoa: this._pessoaMapper.map(model.pessoa)!,
       solicitante: this._pessoaMapper.map(model.solicitante)!,
       dataEmailConfirmacao: model.dataEmailConfirmacao,

@@ -37,6 +37,10 @@ module.exports = {
             type: Sequelize.DECIMAL(10, 2),
             allowNull: false,
           },
+          forma_pagamento: {
+            type: Sequelize.STRING(20),
+            allowNull: false,
+          },
           pessoa_id: {
             type: Sequelize.BIGINT,
             allowNull: false,

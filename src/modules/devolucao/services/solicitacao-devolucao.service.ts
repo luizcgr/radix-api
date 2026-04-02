@@ -69,7 +69,7 @@ export class SolicitacaoDevolucaoService {
         link: devolucaoModel.urlPagamento,
         valorComunhaoBens: +devolucaoModel.valorDizimo,
         valorFundoComunhao: +devolucaoModel.valorFundoComunhao,
-        formaPagamento: 'cartao_credito',
+        formaPagamento: devolucaoModel.formaPagamento,
         anoReferencia: +devolucaoModel.anoReferencia,
         mesReferencia: +devolucaoModel.mesReferencia,
         setor: devolucaoModel.pessoa.celula.setor.nome,
@@ -136,6 +136,7 @@ export class SolicitacaoDevolucaoService {
       model.solicitanteId = this._userInfo.pessoa!.id;
       model.valorDizimo = solicitacao.valorDizimo;
       model.valorFundoComunhao = solicitacao.valorFundoComunhao;
+      model.formaPagamento = solicitacao.formaPagamento;
       model.mesReferencia = solicitacao.mesReferencia;
       model.anoReferencia = solicitacao.anoReferencia;
       model.urlPagamento = linkPagamento.invoiceUrl;

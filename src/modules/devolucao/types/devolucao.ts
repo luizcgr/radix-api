@@ -1,3 +1,4 @@
+import { FormaPagamento } from 'src/modules/cobranca/types/forma-pagamento';
 import { Pessoa } from 'src/modules/pessoas/types/pessoa';
 import { StatusDevolucao } from './status-devolucao';
 
@@ -10,6 +11,7 @@ export type Devolucao = {
   anoReferencia: number;
   valorDizimo: number;
   valorFundoComunhao: number;
+  formaPagamento: FormaPagamento;
   pessoa: Pessoa;
   solicitante: Pessoa;
   pagamentoId: string;
