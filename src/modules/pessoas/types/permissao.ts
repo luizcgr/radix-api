@@ -4,4 +4,5 @@ export type Permissao = {
   setor: boolean;
   celula: boolean;
   admin: boolean;
+  regional: boolean;
 };

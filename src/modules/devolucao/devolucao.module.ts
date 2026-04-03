@@ -10,6 +10,7 @@ import { RelatorioCelulaService } from './services/relatorio-celula.service';
 import { RelatorioDevolucaoService } from './services/relatorio-devolucao.service';
 import { RelatorioEvolucaoService } from './services/relatorio-evolucao.service';
 import { RelatorioMissaoService } from './services/relatorio-missao.service';
+import { RelatorioRegionalService } from './services/relatorio-regional.service';
 import { RelatorioSetorService } from './services/relatorio-setor.service';
 import { SolicitacaoDevolucaoService } from './services/solicitacao-devolucao.service';
 
@@ -28,6 +29,7 @@ import { SolicitacaoDevolucaoService } from './services/solicitacao-devolucao.se
     RelatorioMissaoService,
     RelatorioEvolucaoService,
     RelatorioDevolucaoService,
+    RelatorioRegionalService,
   ],
   exports: [
     SolicitacaoDevolucaoService,
@@ -37,6 +39,7 @@ import { SolicitacaoDevolucaoService } from './services/solicitacao-devolucao.se
     RelatorioSetorService,
     RelatorioMissaoService,
     RelatorioDevolucaoService,
+    RelatorioRegionalService,
   ],
 })
 export class DevolucaoModule {}

@@ -63,6 +63,7 @@ export class GeradorJwtTokenService {
       missao: () => permissao.missao,
       setor: () => permissao.setor,
       celula: () => permissao.celula,
+      regional: () => permissao.regional,
     };
     return Object.keys(roleMappings).filter((role) => roleMappings[role]());
   }

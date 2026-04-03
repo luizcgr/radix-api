@@ -62,6 +62,22 @@ module.exports = {
         },
         { transaction },
       );
+
+      await queryInterface.addColumn(
+        'tb_permissao',
+        'regional',
+        {
+          type: Sequelize.BOOLEAN,
+          allowNull: false,
+          defaultValue: false,
+        },
+        { transaction },
+      );
+
+      await queryInterface.sequelize.query(
+        `UPDATE tb_permissao SET regional = true WHERE pessoa_id IN (1, 2, 3)`,
+        { transaction },
+      );
     }),
   down: (queryInterface: QueryInterface) =>
     queryInterface.sequelize.transaction(async (transaction: Transaction) => {
@@ -69,5 +85,8 @@ module.exports = {
         transaction,
       });
       await queryInterface.dropTable('tb_regional', { transaction });
+      await queryInterface.removeColumn('tb_permissao', 'regional', {
+        transaction,
+      });
     }),
 };

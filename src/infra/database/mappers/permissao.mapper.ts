@@ -15,6 +15,7 @@ export class PermissaoMapper extends ModelMapper<PermissaoModel, Permissao> {
       setor: model.setor,
       celula: model.celula,
       admin: model.admin,
+      regional: model.regional,
     };
     return permissao;
   }

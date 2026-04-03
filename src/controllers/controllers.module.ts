@@ -11,6 +11,7 @@ import { MinhaMissaoController } from './minha-missao/minha-missao.controller';
 import { PessoaController } from './pessoa/pessoa.controller';
 import { RefreshTokenController } from './refresh-token/refresh-token.controller';
 import { WebhookController } from './webhook/webhook.controller';
+import { MeuRegionalController } from './meu-regional/meu-regional.controller';
 
 @Module({
   imports: [AuthModule, PessoasModule, DevolucaoModule, CelulasModule],
@@ -23,6 +24,7 @@ import { WebhookController } from './webhook/webhook.controller';
     MeuSetorController,
     MinhaMissaoController,
     PessoaController,
+    MeuRegionalController,
   ],
 })
 export class ControllersModule {}

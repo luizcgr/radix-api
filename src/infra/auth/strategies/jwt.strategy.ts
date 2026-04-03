@@ -10,6 +10,7 @@ import { PessoaMapper } from 'src/infra/database/mappers/pessoa.mapper';
 import { CelulaModel } from 'src/infra/database/models/celula.model';
 import { SetorModel } from 'src/infra/database/models/setor.model';
 import { MissaoModel } from 'src/infra/database/models/missao.model';
+import { RegionalModel } from 'src/infra/database/models/regional.model';
 
 export interface JwtPayload {
   uid: number;
@@ -47,7 +48,13 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
               {
                 as: 'setor',
                 model: SetorModel,
-                include: [{ as: 'missao', model: MissaoModel }],
+                include: [
+                  {
+                    as: 'missao',
+                    model: MissaoModel,
+                    include: [{ as: 'regional', model: RegionalModel }],
+                  },
+                ],
               },
             ],
           },
