@@ -11,6 +11,7 @@ interface QueryResult {
   setor_id: number;
   nome_setor: string;
   nome_missao: string;
+  nome_regional: string;
   total_celulas: number;
   total_pessoas: number;
   total_devolucoes: number;
@@ -66,6 +67,7 @@ export class RelatorioMissaoService {
           mesReferencia,
           id: missaoId,
           nome: typedResults[0]?.['nome_missao'] || '',
+          regional: typedResults[0]?.['nome_regional'] || '',
           totalPessoas,
           totalDevolucoes,
           fidelidade,
@@ -88,6 +90,7 @@ export class RelatorioMissaoService {
         ts.id setor_id,
         ts.nome nome_setor,
         tm.nome nome_missao,
+        tr.nome nome_regional,
         COUNT(distinct tc.id) as total_celulas,
         COUNT(distinct tp.id) as total_pessoas,
         COUNT(
@@ -118,12 +121,14 @@ export class RelatorioMissaoService {
         and td.mes_referencia = :mesReferencia
       left join tb_missao tm on 
 	    tm.id = ts.missao_id
+      left join tb_regional tr on tr.id = tm.regional_id
       where
         ts.missao_id = :missaoId
       group by
         ts.id,
         ts.nome,
-        tm.nome
+        tm.nome,
+        tr.nome
       order by
         ts.nome;
     `;

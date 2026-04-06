@@ -3,6 +3,7 @@ import { ItemEvolucao } from './item-evolucao';
 export type DadosBasicosRelatorioMissao = {
   id: number;
   nome: string;
+  regional: string;
   mesReferencia: number;
   anoReferencia: number;
   totalPessoas: number;
